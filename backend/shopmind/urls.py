@@ -3,6 +3,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.views import APIView
@@ -14,6 +17,16 @@ from rest_framework import serializers
 
 from products.views import ProductViewSet
 from orders.views import OrderViewSet
+
+class MyTokenSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['is_staff'] = user.is_staff  # ← добавляем is_staff в токен
+        return token
+
+class MyTokenView(TokenObtainPairView):
+    serializer_class = MyTokenSerializer
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
@@ -38,7 +51,7 @@ router.register('orders', OrderViewSet, basename='order')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/auth/token/',         TokenObtainPairView.as_view()),
+    path('api/auth/token/', MyTokenView.as_view()),
     path('api/auth/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/register/',      RegisterView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

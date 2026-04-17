@@ -1,9 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
-export class Cart {}
+export class Cart implements OnInit {
+  items: any[] = [];
+
+  ngOnInit() {
+    this.items = JSON.parse(localStorage.getItem('cart') || '[]');
+  }
+
+  get total() {
+    return this.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+  }
+
+  increase(item: any) {
+    item.qty++;
+    this.save();
+  }
+
+  decrease(item: any) {
+    if (item.qty > 1) item.qty--;
+    else this.remove(item);
+    this.save();
+  }
+
+  remove(item: any) {
+    this.items = this.items.filter(i => i.id !== item.id);
+    this.save();
+  }
+
+  save() {
+    localStorage.setItem('cart', JSON.stringify(this.items));
+  }
+
+  checkout() {
+    alert('Заказ оформлен! Спасибо 🎉');
+    localStorage.removeItem('cart');
+    this.items = [];
+  }
+}

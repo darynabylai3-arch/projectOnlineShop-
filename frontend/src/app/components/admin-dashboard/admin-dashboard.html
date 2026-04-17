@@ -1,1 +1,66 @@
-<p>admin-dashboard works!</p>
+<div class="admin-wrapper">
+  <div class="admin-header">
+    <h1>⚙️ Админ панель</h1>
+    <button class="btn-add" (click)="openCreate()">+ Добавить товар</button>
+  </div>
+
+  @if (showForm) {
+    <div class="form-card">
+      <h2>{{ editingId ? 'Редактировать' : 'Новый товар' }}</h2>
+      <div class="form-group">
+        <label>Название</label>
+        <input [(ngModel)]="form.name" placeholder="Название товара" />
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea [(ngModel)]="form.description" placeholder="Описание"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Цена (₸)</label>
+          <input [(ngModel)]="form.price" type="number" />
+        </div>
+        <div class="form-group">
+          <label>Остаток</label>
+          <input [(ngModel)]="form.stock" type="number" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Фото</label>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" />
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" (click)="save()">💾 Сохранить</button>
+        <button class="btn-cancel" (click)="showForm = false">Отмена</button>
+      </div>
+    </div>
+  }
+
+  <div class="products-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Фото</th>
+          <th>Название</th>
+          <th>Цена</th>
+          <th>Остаток</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of products; track p.id) {
+          <tr>
+            <td><img [src]="p.image" *ngIf="p.image" class="table-img" /></td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.price }} ₸</td>
+            <td>{{ p.stock }}</td>
+            <td>
+              <button class="btn-edit" (click)="openEdit(p)">✏️</button>
+              <button class="btn-delete" (click)="delete(p.id)">🗑️</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
