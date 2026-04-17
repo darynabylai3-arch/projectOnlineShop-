@@ -1,1 +1,25 @@
-<p>login works!</p>
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="auth-logo">🛍️ ShopMind</div>
+    <h2>Добро пожаловать!</h2>
+    <p class="auth-subtitle">Войдите в свой аккаунт</p>
+
+    <div class="form-group">
+      <label>Логин</label>
+      <input [(ngModel)]="username" type="text" placeholder="Введите логин" />
+    </div>
+
+    <div class="form-group">
+      <label>Пароль</label>
+      <input [(ngModel)]="password" type="password" placeholder="Введите пароль" />
+    </div>
+
+    @if (error) {
+    <p class="error-msg">{{ error }}</p>
+    }
+
+    <button class="btn-submit" (click)="submit()">Войти</button>
+
+    <p class="auth-link">Нет аккаунта? <a routerLink="/register">Зарегистрируйся</a></p>
+  </div>
+</div>

@@ -1,1 +1,17 @@
-<p>product-detail works!</p>
+<div class="detail-wrapper">
+  @if (product) {
+    <div class="detail-card">
+      <img [src]="product.image" *ngIf="product.image" class="detail-img" />
+      <div class="detail-info">
+        <h1>{{ product.name }}</h1>
+        <p class="detail-desc">{{ product.description }}</p>
+        <p class="detail-price">{{ product.price }} ₸</p>
+        <p class="detail-stock">В наличии: {{ product.stock }} шт.</p>
+        <button class="btn-cart" (click)="addToCart()">🛒 В корзину</button>
+        <a routerLink="/" class="btn-back">← Назад</a>
+      </div>
+    </div>
+  } @else {
+    <p class="loading">Загрузка...</p>
+  }
+</div>

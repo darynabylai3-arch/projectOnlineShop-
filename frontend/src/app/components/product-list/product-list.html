@@ -11,7 +11,7 @@
 
     <div class="products-grid" *ngIf="products.length > 0">
       <div class="product-card" *ngFor="let p of products">
-        <img [src]="'http://localhost:8000' + p.image" *ngIf="p.image" alt="{{ p.name }}"/>
+        <img [src]="p.image" *ngIf="p.image" alt="{{ p.name }}"/>
         <div class="no-image" *ngIf="!p.image"></div>
         <div class="card-body">
           <h3>{{ p.name }}</h3>
