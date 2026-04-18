@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService, Product } from '../../services/product';
@@ -14,10 +14,14 @@ export class ProductDetail implements OnInit {
   product: Product | null = null;
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getById(id).subscribe(p => this.product = p);
+    this.productService.getById(id).subscribe(p => {
+      this.product = p;
+      this.cdr.detectChanges();
+    });
   }
 
   addToCart() {

@@ -15,9 +15,10 @@ export interface Product {
 export class ProductService {
   private api = 'http://localhost:8000/api/products';
   private http = inject(HttpClient);
+  private headers = { headers: { 'Accept': 'application/json' } };
 
-  getAll()               { return this.http.get<Product[]>(this.api + '/'); }
-  getById(id: number)    { return this.http.get<Product>(`${this.api}/${id}/`); }
+  getAll()               { return this.http.get<Product[]>(this.api + '/', this.headers); }
+  getById(id: number)    { return this.http.get<Product>(`${this.api}/${id}/`, this.headers); }
   create(data: FormData) { return this.http.post<Product>(this.api + '/', data); }
   update(id: number, data: FormData) { return this.http.patch<Product>(`${this.api}/${id}/`, data); }
   delete(id: number)     { return this.http.delete(`${this.api}/${id}/`); }

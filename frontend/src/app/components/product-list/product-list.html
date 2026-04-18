@@ -1,18 +1,54 @@
 <div class="shop">
   <header class="hero">
-    <h1>ShopMind</h1>
+    <h1><span class="seven">Shop</span><span class="eleven">Mind</span></h1>
     <p>Ваш умный интернет-магазин</p>
-    <a routerLink="/login" class="btn-primary">Войти</a>
-    <a routerLink="/register" class="btn-secondary">Регистрация</a>
+    <div class="hero-buttons">
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" class="btn-primary">Войти</a>
+        <a routerLink="/register" class="btn-secondary">Регистрация</a>
+      </ng-container>
+      <ng-container *ngIf="isLoggedIn">
+        <a *ngIf="isAdmin" routerLink="/admin" class="btn-primary">Админ панель</a>
+        <span class="username">👤 {{ username }}</span>
+        <button class="btn-secondary" (click)="logout()">Выйти</button>
+      </ng-container>
+    </div>
   </header>
 
   <main class="products-section">
     <h2>Каталог товаров</h2>
 
-    <div class="products-grid" *ngIf="products.length > 0">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Поиск товара..."
+        [(ngModel)]="searchQuery"
+        (input)="applyFilters()"
+      />
+    </div>
+
+    <div class="categories">
+      <button
+        [class.active]="selectedCategory === null"
+        (click)="selectCategory(null)">
+        Все
+      </button>
+      <button
+        *ngFor="let cat of categories"
+        [class.active]="selectedCategory === cat"
+        (click)="selectCategory(cat)">
+        Категория {{ cat }}
+      </button>
+    </div>
+
+    <div class="products-grid" *ngIf="products && products.length > 0; else emptyBlock">
       <div class="product-card" *ngFor="let p of products">
-        <img [src]="p.image" *ngIf="p.image" alt="{{ p.name }}"/>
-        <div class="no-image" *ngIf="!p.image"></div>
+        <div class="image-wrapper">
+          <img *ngIf="p.image; else noImage" [src]="p.image" alt="{{ p.name }}">
+          <ng-template #noImage>
+            <div class="no-image">No image</div>
+          </ng-template>
+        </div>
         <div class="card-body">
           <h3>{{ p.name }}</h3>
           <p class="desc">{{ p.description }}</p>
@@ -24,8 +60,15 @@
       </div>
     </div>
 
-    <div class="empty" *ngIf="products.length === 0">
-      <p>Товаров пока нет. Добавьте их через <a routerLink="/admin">админ панель</a>.</p>
-    </div>
+    <ng-template #emptyBlock>
+      <div class="empty">
+        <p>Товаров не найдено.</p>
+      </div>
+    </ng-template>
   </main>
+
+  <a routerLink="/cart" class="floating-cart">
+    🛒
+    <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+  </a>
 </div>
