@@ -55,4 +55,5 @@ urlpatterns = [
     path('api/auth/token/', MyTokenView.as_view()),
     path('api/auth/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/register/',      RegisterView.as_view()),
+    path('api/chat/', include('chat.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
