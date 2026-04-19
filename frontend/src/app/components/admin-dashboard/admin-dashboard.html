@@ -1,108 +1,187 @@
 <div class="admin-wrapper">
+
+  <!-- Header -->
   <div class="admin-header">
-    <h1>⚙️ Админ панель</h1>
+    <div>
+      <h1>Admin Panel</h1>
+      <p>Manage products and categories</p>
+    </div>
     <div class="header-actions">
-      <button class="btn-add" (click)="openCreate()">+ Добавить товар</button>
-      <button class="btn-cat" (click)="showCatForm = !showCatForm">🏷️ Категории</button>
+      <button class="btn-cat" (click)="showCatForm = !showCatForm">🏷️ Categories</button>
+      <button class="btn-add" (click)="openCreate()">+ Add Product</button>
     </div>
   </div>
 
-  <!-- Форма категорий -->
-  @if (showCatForm) {
-    <div class="form-card">
-      <h2>Управление категориями</h2>
-      <div class="cat-list">
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon purple">📦</div>
+      <div class="stat-value">{{ products.length }}</div>
+      <div class="stat-label">Products</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-value">{{ inStockCount }}</div>
+      <div class="stat-label">In Stock</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon coral">⚠️</div>
+      <div class="stat-value">{{ lowStockCount }}</div>
+      <div class="stat-label">Low Stock</div>
+    </div>
+    <div class="stat-card" (click)="showCatForm = !showCatForm" style="cursor:pointer">
+      <div class="stat-icon teal">🏷️</div>
+      <div class="stat-value">{{ categories.length }}</div>
+      <div class="stat-label">Categories</div>
+    </div>
+  </div>
+
+  <!-- Main panel -->
+  <div class="main-panel">
+
+    <!-- Products table -->
+    <div class="panel-card">
+      <div class="card-header">
+        <h2>Products</h2>
+        <input class="search-input"
+               placeholder="Search..."
+               [(ngModel)]="searchQuery" />
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Category</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of filteredProducts; track p.id) {
+            <tr>
+              <td>
+                @if (p.image) {
+                  <img [src]="p.image" class="table-img" />
+                } @else {
+                  <div class="no-img">📦</div>
+                }
+              </td>
+              <td>
+                <div class="product-name">{{ p.name }}</div>
+                <div class="product-desc">{{ p.description | slice:0:40 }}{{ p.description.length > 40 ? '…' : '' }}</div>
+              </td>
+              <td>{{ p.price | number }} ₸</td>
+              <td>
+                <span [class]="stockBadge(p.stock)">
+                  {{ p.stock > 0 ? p.stock : 'None' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge badge-cat">{{ getCatName(p.category) }}</span>
+              </td>
+              <td>
+                <div class="action-cell">
+                  <button class="btn-icon" (click)="openEdit(p)" title="Edit">✏️</button>
+                  <button class="btn-icon delete" (click)="delete(p.id)" title="Delete">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          }
+          @if (filteredProducts.length === 0) {
+            <tr><td colspan="6">
+              <div class="empty-state">No products found</div>
+            </td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sidebar: categories -->
+    <div class="sidebar-card">
+      <h2>Categories</h2>
+      <div>
         @for (cat of categories; track cat.id) {
           <div class="cat-item">
-            <span>{{ cat.name }}</span>
-            <button class="btn-delete" (click)="deleteCategory(cat.id)">🗑️</button>
+            <div>
+              <div class="cat-name">{{ cat.name }}</div>
+              <div class="cat-count">{{ countByCategory(cat.id) }} products</div>
+            </div>
+            <button class="btn-cat-delete" (click)="deleteCategory(cat.id)">×</button>
           </div>
         }
         @if (categories.length === 0) {
-          <p class="no-cats">Категорий пока нет</p>
+          <div style="font-size:13px;color:#aaa;padding:8px 0">No categories</div>
         }
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Новая категория</label>
-          <input [(ngModel)]="newCatName" placeholder="Название категории" />
-        </div>
-      </div>
-      <div class="form-actions">
-        <button class="btn-save" (click)="addCategory()">+ Добавить</button>
-        <button class="btn-cancel" (click)="showCatForm = false">Закрыть</button>
+      <div class="cat-add-row">
+        <input [(ngModel)]="newCatName"
+               placeholder="New category..."
+               (keydown.enter)="addCategory()" />
+        <button class="btn-add-cat" (click)="addCategory()">+</button>
       </div>
     </div>
-  }
 
-  <!-- Форма товара -->
+  </div><!-- /main-panel -->
+
+  <!-- Modal: add/edit product -->
   @if (showForm) {
-    <div class="form-card">
-      <h2>{{ editingId ? 'Редактировать' : 'Новый товар' }}</h2>
-      <div class="form-group">
-        <label>Название</label>
-        <input [(ngModel)]="form.name" placeholder="Название товара" />
-      </div>
-      <div class="form-group">
-        <label>Описание</label>
-        <textarea [(ngModel)]="form.description" placeholder="Описание"></textarea>
-      </div>
-      <div class="form-row">
+    <div class="modal-overlay" (click)="closeOnBackdrop($event)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+
+        <h2>
+          {{ editingId ? 'Edit Product' : 'New Product' }}
+          <button class="btn-close" (click)="showForm = false">×</button>
+        </h2>
+
         <div class="form-group">
-          <label>Цена (₸)</label>
-          <input [(ngModel)]="form.price" type="number" />
+          <label>Name</label>
+          <input [(ngModel)]="form.name" placeholder="Product name" />
         </div>
+
         <div class="form-group">
-          <label>Остаток</label>
-          <input [(ngModel)]="form.stock" type="number" />
+          <label>Description</label>
+          <textarea [(ngModel)]="form.description" placeholder="Short description"></textarea>
         </div>
-      </div>
-      <div class="form-group">
-        <label>Категория</label>
-        <select [(ngModel)]="form.category">
-          @for (cat of categories; track cat.id) {
-            <option [value]="cat.id">{{ cat.name }}</option>
-          }
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Фото</label>
-        <input type="file" (change)="onFileChange($event)" accept="image/*" />
-      </div>
-      <div class="form-actions">
-        <button class="btn-save" (click)="save()">💾 Сохранить</button>
-        <button class="btn-cancel" (click)="showForm = false">Отмена</button>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price (₸)</label>
+            <input [(ngModel)]="form.price" type="number" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input [(ngModel)]="form.stock" type="number" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select [(ngModel)]="form.category">
+            @for (cat of categories; track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Photo</label>
+          <div class="file-drop" (click)="fileInput.click()">
+            {{ imageFile ? imageFile.name : 'Click or drag an image' }}
+          </div>
+          <input #fileInput type="file" accept="image/*"
+                 (change)="onFileChange($event)"
+                 style="display:none" />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-save" (click)="save()">💾 Save</button>
+          <button class="btn-cancel" (click)="showForm = false">Cancel</button>
+        </div>
+
       </div>
     </div>
   }
 
-  <div class="products-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Фото</th>
-          <th>Название</th>
-          <th>Цена</th>
-          <th>Остаток</th>
-          <th>Категория</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (p of products; track p.id) {
-          <tr>
-            <td><img [src]="p.image" *ngIf="p.image" class="table-img" /></td>
-            <td>{{ p.name }}</td>
-            <td>{{ p.price }} ₸</td>
-            <td>{{ p.stock }}</td>
-            <td>{{ getCatName(p.category) }}</td>
-            <td>
-              <button class="btn-edit" (click)="openEdit(p)">✏️</button>
-              <button class="btn-delete" (click)="delete(p.id)">🗑️</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
 </div>
