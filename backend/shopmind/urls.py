@@ -4,18 +4,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-
-from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.routers import DefaultRouter
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions
+from rest_framework import permissions, serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
 
-from products.views import ProductViewSet
+from products.views import ProductViewSet, CategoryViewSet
 from orders.views import OrderViewSet
 
 class MyTokenSerializer(TokenObtainPairSerializer):
@@ -23,7 +20,7 @@ class MyTokenSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['is_staff'] = user.is_staff
-        token['username'] = user.username 
+        token['username'] = user.username
         return token
 
 class MyTokenView(TokenObtainPairView):
@@ -47,13 +44,16 @@ class RegisterView(APIView):
 
 router = DefaultRouter()
 router.register('products', ProductViewSet)
+router.register('categories', CategoryViewSet)
 router.register('orders', OrderViewSet, basename='order')
+from chat.views import ai_chat, chat_history
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/auth/token/', MyTokenView.as_view()),
     path('api/auth/token/refresh/', TokenRefreshView.as_view()),
-    path('api/auth/register/',      RegisterView.as_view()),
-    path('api/chat/', include('chat.urls')),
+    path('api/auth/register/', RegisterView.as_view()),
+    path('api/chat/ai/', ai_chat),
+    path('api/chat/history/', chat_history),    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

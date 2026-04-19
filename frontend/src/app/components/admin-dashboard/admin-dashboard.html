@@ -1,9 +1,41 @@
 <div class="admin-wrapper">
   <div class="admin-header">
     <h1>⚙️ Админ панель</h1>
-    <button class="btn-add" (click)="openCreate()">+ Добавить товар</button>
+    <div class="header-actions">
+      <button class="btn-add" (click)="openCreate()">+ Добавить товар</button>
+      <button class="btn-cat" (click)="showCatForm = !showCatForm">🏷️ Категории</button>
+    </div>
   </div>
 
+  <!-- Форма категорий -->
+  @if (showCatForm) {
+    <div class="form-card">
+      <h2>Управление категориями</h2>
+      <div class="cat-list">
+        @for (cat of categories; track cat.id) {
+          <div class="cat-item">
+            <span>{{ cat.name }}</span>
+            <button class="btn-delete" (click)="deleteCategory(cat.id)">🗑️</button>
+          </div>
+        }
+        @if (categories.length === 0) {
+          <p class="no-cats">Категорий пока нет</p>
+        }
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Новая категория</label>
+          <input [(ngModel)]="newCatName" placeholder="Название категории" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" (click)="addCategory()">+ Добавить</button>
+        <button class="btn-cancel" (click)="showCatForm = false">Закрыть</button>
+      </div>
+    </div>
+  }
+
+  <!-- Форма товара -->
   @if (showForm) {
     <div class="form-card">
       <h2>{{ editingId ? 'Редактировать' : 'Новый товар' }}</h2>
@@ -26,6 +58,14 @@
         </div>
       </div>
       <div class="form-group">
+        <label>Категория</label>
+        <select [(ngModel)]="form.category">
+          @for (cat of categories; track cat.id) {
+            <option [value]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
         <label>Фото</label>
         <input type="file" (change)="onFileChange($event)" accept="image/*" />
       </div>
@@ -44,6 +84,7 @@
           <th>Название</th>
           <th>Цена</th>
           <th>Остаток</th>
+          <th>Категория</th>
           <th>Действия</th>
         </tr>
       </thead>
@@ -54,6 +95,7 @@
             <td>{{ p.name }}</td>
             <td>{{ p.price }} ₸</td>
             <td>{{ p.stock }}</td>
+            <td>{{ getCatName(p.category) }}</td>
             <td>
               <button class="btn-edit" (click)="openEdit(p)">✏️</button>
               <button class="btn-delete" (click)="delete(p.id)">🗑️</button>
