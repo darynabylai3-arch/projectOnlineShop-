@@ -1,6 +1,5 @@
 <div class="admin-wrapper">
 
-  <!-- Header -->
   <div class="admin-header">
     <div>
       <h1>Admin Panel</h1>
@@ -12,7 +11,6 @@
     </div>
   </div>
 
-  <!-- Stats row -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-icon purple">📦</div>
@@ -36,16 +34,12 @@
     </div>
   </div>
 
-  <!-- Main panel -->
   <div class="main-panel">
 
-    <!-- Products table -->
     <div class="panel-card">
       <div class="card-header">
         <h2>Products</h2>
-        <input class="search-input"
-               placeholder="Search..."
-               [(ngModel)]="searchQuery" />
+        <input class="search-input" placeholder="Search..." [(ngModel)]="searchQuery" />
       </div>
       <table>
         <thead>
@@ -98,7 +92,6 @@
       </table>
     </div>
 
-    <!-- Sidebar: categories -->
     <div class="sidebar-card">
       <h2>Categories</h2>
       <div>
@@ -123,9 +116,8 @@
       </div>
     </div>
 
-  </div><!-- /main-panel -->
+  </div>
 
-  <!-- Modal: add/edit product -->
   @if (showForm) {
     <div class="modal-overlay" (click)="closeOnBackdrop($event)">
       <div class="modal-card" (click)="$event.stopPropagation()">
@@ -167,12 +159,12 @@
 
         <div class="form-group">
           <label>Photo</label>
-          <div class="file-drop" (click)="fileInput.click()">
-            {{ imageFile ? imageFile.name : 'Click or drag an image' }}
-          </div>
-          <input #fileInput type="file" accept="image/*"
-                 (change)="onFileChange($event)"
-                 style="display:none" />
+          <input type="file"
+                 accept="image/*"
+                 (change)="onFileChange($event)" />
+          <p *ngIf="imageFile" style="font-size:13px; margin-top:6px; color:#007a33;">
+            ✅ {{ imageFile.name }}
+          </p>
         </div>
 
         <div class="form-actions">

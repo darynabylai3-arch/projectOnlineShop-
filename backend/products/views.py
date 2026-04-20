@@ -19,3 +19,15 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+
+    def create(self, request, *args, **kwargs):
+        print("FILES:", request.FILES)
+        print("DATA:", request.data)
+        return super().create(request, *args, **kwargs)
+    

@@ -145,7 +145,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'shopmind_db',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': '1212',
         'HOST': 'localhost',
         'PORT': '5432',
     }

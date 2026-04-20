@@ -13,35 +13,24 @@ import { ProductService, Product, Category } from '../../services/product';
 export class AdminDashboard implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];
-
   private productService = inject(ProductService);
 
   showForm = false;
-  showCatForm = false
+  showCatForm = false;
   editingId: number | null = null;
   searchQuery = '';
   newCatName = '';
 
-  form = {
-    name: '',
-    description: '',
-    price: 0,
-    stock: 0,
-    category: 0,
-  };
+  form = { name: '', description: '', price: 0, stock: 0, category: 0 };
   imageFile: File | null = null;
-
-  // ── Lifecycle ──────────────────────────────────
 
   ngOnInit() {
     this.loadProducts();
     this.loadCategories();
   }
 
-  // ── Data loading ───────────────────────────────
-
   loadProducts() {
-    this.productService.getAll().subscribe(p => (this.products = p));
+    this.productService.getAll().subscribe(p => this.products = p);
   }
 
   loadCategories() {
@@ -53,16 +42,13 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // ── Computed ───────────────────────────────────
-
   get filteredProducts(): Product[] {
     const q = this.searchQuery.toLowerCase().trim();
     if (!q) return this.products;
-    return this.products.filter(
-      p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q) ||
-        this.getCatName(p.category).toLowerCase().includes(q)
+    return this.products.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      this.getCatName(p.category).toLowerCase().includes(q)
     );
   }
 
@@ -73,8 +59,6 @@ export class AdminDashboard implements OnInit {
   get lowStockCount(): number {
     return this.products.filter(p => p.stock > 0 && p.stock <= 5).length;
   }
-
-  // ── Helpers ────────────────────────────────────
 
   getCatName(id: number): string {
     return this.categories.find(c => c.id === id)?.name ?? '—';
@@ -90,30 +74,16 @@ export class AdminDashboard implements OnInit {
     return 'badge badge-stock';
   }
 
-  // ── Form control ───────────────────────────────
-
   openCreate() {
     this.editingId = null;
-    this.form = {
-      name: '',
-      description: '',
-      price: 0,
-      stock: 0,
-      category: this.categories[0]?.id ?? 0,
-    };
+    this.form = { name: '', description: '', price: 0, stock: 0, category: this.categories[0]?.id ?? 0 };
     this.imageFile = null;
     this.showForm = true;
   }
 
   openEdit(p: Product) {
     this.editingId = p.id;
-    this.form = {
-      name: p.name,
-      description: p.description,
-      price: p.price,
-      stock: p.stock,
-      category: p.category,
-    };
+    this.form = { name: p.name, description: p.description, price: p.price, stock: p.stock, category: p.category };
     this.imageFile = null;
     this.showForm = true;
   }
@@ -126,10 +96,10 @@ export class AdminDashboard implements OnInit {
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.imageFile = input.files?.[0] ?? null;
+    if (input.files && input.files.length > 0) {
+      this.imageFile = input.files[0];
+    }
   }
-
-  // ── CRUD ───────────────────────────────────────
 
   save() {
     const fd = new FormData();
@@ -138,7 +108,9 @@ export class AdminDashboard implements OnInit {
     fd.append('price', String(this.form.price));
     fd.append('stock', String(this.form.stock));
     fd.append('category', String(this.form.category));
-    if (this.imageFile) fd.append('image', this.imageFile);
+    if (this.imageFile) {
+      fd.append('image', this.imageFile, this.imageFile.name);
+    }
 
     const req = this.editingId
       ? this.productService.update(this.editingId, fd)
@@ -155,8 +127,6 @@ export class AdminDashboard implements OnInit {
     this.productService.delete(id).subscribe(() => this.loadProducts());
   }
 
-  // ── Categories ─────────────────────────────────
-
   addCategory() {
     if (!this.newCatName.trim()) return;
     this.productService.createCategory(this.newCatName.trim()).subscribe(() => {
@@ -169,16 +139,4 @@ export class AdminDashboard implements OnInit {
     if (!confirm('Удалить категорию?')) return;
     this.productService.deleteCategory(id).subscribe(() => this.loadCategories());
   }
-
-  isDarkMode = false;
-
-  toggleTheme() {
-    this.isDarkMode = !this.isDarkMode;
-    if (this.isDarkMode) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-  }
-
 }

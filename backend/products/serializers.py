@@ -7,16 +7,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-
     class Meta:
         model = Product
         fields = '__all__'
 
-    def get_image(self, obj):
-        if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return f'http://localhost:8000{obj.image.url}'
-        return None
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        request = self.context.get('request')
+        if instance.image and request:
+            rep['image'] = request.build_absolute_uri(instance.image.url)
+        elif instance.image:
+            rep['image'] = f'http://localhost:8000{instance.image.url}'
+        else:
+            rep['image'] = None
+        return rep
