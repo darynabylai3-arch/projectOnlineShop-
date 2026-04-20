@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from users.views import ForgotPasswordView, ResetPasswordView
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -54,6 +55,8 @@ urlpatterns = [
     path('api/auth/token/', MyTokenView.as_view()),
     path('api/auth/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/register/', RegisterView.as_view()),
+    path('api/auth/forgot-password/', ForgotPasswordView.as_view()),
+    path('api/auth/reset-password/', ResetPasswordView.as_view()),
     path('api/chat/ai/', ai_chat),
     path('api/chat/history/', chat_history),    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

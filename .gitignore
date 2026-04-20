@@ -1,10 +1,38 @@
-venv/
+# Python
 __pycache__/
-*.pyc
-.DS_Store
-.env
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Django
 *.log
-venv/
-__pycache__/
-*.pyc
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
 .DS_Store
+
+# Angular
+node_modules/
+dist/
+.tmp/
+.angular/
+
+# Testing
+.coverage

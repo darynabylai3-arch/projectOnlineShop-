@@ -22,6 +22,17 @@ export class AuthService {
     return this.http.post(`${this.api}/register/`, { username, email, password });
   }
 
+  forgotPassword(email: string) {
+    return this.http.post<{message: string}>(`${this.api}/forgot-password/`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post<{message: string}>(`${this.api}/reset-password/`, { 
+      token, 
+      new_password: newPassword 
+    });
+  }
+
   logout() {
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');

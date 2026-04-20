@@ -144,7 +144,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'shopmind_db',
-        'USER': 'postgres',
+        'USER': 'aio',
         'PASSWORD': '1212',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -153,3 +153,5 @@ DATABASES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

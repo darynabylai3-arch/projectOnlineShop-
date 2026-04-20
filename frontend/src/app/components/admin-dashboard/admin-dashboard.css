@@ -4,21 +4,17 @@ body {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-/* ── Reset & base ─────────────────────────────── */
 *, *::before, *::after { 
   box-sizing: border-box; 
   font-family: 'Josefin Sans', sans-serif;
 }
 
-
-/* ── Layout ───────────────────────────────────── */
 .admin-wrapper {
   max-width: 1040px;
   margin: 32px auto;
   padding: 0 20px;
 }
 
-/* ── Header ───────────────────────────────────── */
 .admin-header {
   display: flex;
   justify-content: space-between;
@@ -44,7 +40,6 @@ body {
   gap: 8px;
 }
 
-/* ── Buttons ──────────────────────────────────── */
 .btn-add,
 .btn-cat,
 .btn-save,
@@ -91,7 +86,6 @@ body {
 }
 .btn-cancel:hover { background: #f5f5f5; }
 
-/* ── Stats row ────────────────────────────────── */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -144,14 +138,12 @@ body {
   margin-top: 4px;
 }
 
-/* ── Main panel grid ──────────────────────────── */
 .main-panel {
   display: grid;
   grid-template-columns: 1fr 256px;
   gap: 16px;
 }
 
-/* ── Cards ────────────────────────────────────── */
 .panel-card {
   background: white;
   border: 0.5px solid #ebebeb;
@@ -187,7 +179,6 @@ body {
 }
 .search-input:focus { border-color: #534AB7; background: white; }
 
-/* ── Sidebar ──────────────────────────────────── */
 .sidebar-card {
   background: white;
   border: 0.5px solid #ebebeb;
@@ -203,7 +194,6 @@ body {
   margin: 0 0 14px;
 }
 
-/* ── Category items ───────────────────────────── */
 .cat-item {
   display: flex;
   justify-content: space-between;
@@ -262,7 +252,6 @@ body {
 }
 .btn-add-cat:hover { background: #3C3489; }
 
-/* ── Table ────────────────────────────────────── */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -293,7 +282,6 @@ tbody td {
   vertical-align: middle;
 }
 
-/* ── Table image ──────────────────────────────── */
 .table-img {
   width: 36px;
   height: 36px;
@@ -325,7 +313,6 @@ tbody td {
   margin-top: 1px;
 }
 
-/* ── Badges ───────────────────────────────────── */
 .badge {
   display: inline-block;
   padding: 2px 10px;
@@ -339,7 +326,6 @@ tbody td {
 .badge-low    { background: #FAECE7; color: #993C1D; }
 .badge-zero   { background: #f0f0f0; color: #888; }
 
-/* ── Action buttons ───────────────────────────── */
 .action-cell {
   display: flex;
   gap: 4px;
@@ -372,7 +358,6 @@ tbody td {
   color: #993C1D;
 }
 
-/* ── Modal overlay ────────────────────────────── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -386,7 +371,6 @@ tbody td {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* ── Modal card ───────────────────────────────── */
 .modal-card {
   background: white;
   border-radius: 16px;
@@ -430,7 +414,6 @@ tbody td {
 }
 .btn-close:hover { background: #f5f5f5; color: #333; }
 
-/* ── Form ─────────────────────────────────────── */
 .form-group {
   margin-bottom: 14px;
 }
@@ -478,7 +461,6 @@ tbody td {
   gap: 12px;
 }
 
-/* ── File drop zone ───────────────────────────── */
 .file-drop {
   border: 0.5px dashed #ccc;
   border-radius: 8px;
@@ -497,7 +479,6 @@ tbody td {
   margin-top: 4px;
 }
 
-/* ── Toast notification ───────────────────────── */
 .toast {
   position: fixed;
   bottom: 20px;
@@ -517,7 +498,6 @@ tbody td {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Empty state ──────────────────────────────── */
 .empty-state {
   padding: 40px;
   text-align: center;
@@ -525,7 +505,6 @@ tbody td {
   font-size: 13px;
 }
 
-/* ── Responsive ───────────────────────────────── */
 @media (max-width: 720px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .main-panel { grid-template-columns: 1fr; }
