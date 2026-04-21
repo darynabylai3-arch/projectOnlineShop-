@@ -26,7 +26,6 @@ export class ProductList implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
   loading = true;
 
-  // ── Wishlist ──────────────────────────────────────────
   private wishlist: Set<number> = new Set(
     JSON.parse(localStorage.getItem('wishlist') || '[]')
   );
@@ -49,7 +48,6 @@ export class ProductList implements OnInit {
     return this.wishlist.size;
   }
 
-  // ── Discount helper ───────────────────────────────────
   getDiscount(p: any): number {
     if (!p.old_price || !p.price) return 0;
     return Math.round((1 - p.price / p.old_price) * 100);
@@ -105,16 +103,13 @@ export class ProductList implements OnInit {
     this.applyFilters();
   }
 
-  // ── Filter + Sort ─────────────────────────────────────
   applyFilters() {
     let filtered = [...this.allProducts];
 
-    // Category
     if (this.selectedCategory !== null) {
       filtered = filtered.filter(p => p.category === this.selectedCategory);
     }
 
-    // Search
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
@@ -123,7 +118,6 @@ export class ProductList implements OnInit {
       );
     }
 
-    // Sort
     switch (this.sortMode) {
       case 'price_asc':
         filtered.sort((a, b) => a.price - b.price);

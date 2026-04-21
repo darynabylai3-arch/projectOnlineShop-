@@ -16,8 +16,12 @@ export class Cart implements OnInit {
     this.items = JSON.parse(localStorage.getItem('cart') || '[]');
   }
 
-  get total() {
+  get total(): number {
     return this.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+  }
+
+  get totalItems(): number {
+    return this.items.reduce((sum, i) => sum + i.qty, 0);
   }
 
   increase(item: any) {

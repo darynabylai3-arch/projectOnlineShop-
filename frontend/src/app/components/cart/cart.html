@@ -1,35 +1,87 @@
-<div class="cart-wrapper">
-  <h1>🛒 Корзина</h1>
+<div class="cart-page">
 
-  @if (items.length > 0) {
-    <div class="cart-list">
-      @for (item of items; track item.id) {
-        <div class="cart-item">
-          <img [src]="item.image" *ngIf="item.image" class="cart-img" />
-          <div class="cart-info">
-            <h3>{{ item.name }}</h3>
-            <p class="cart-price">{{ item.price }} ₸</p>
-          </div>
-          <div class="cart-qty">
-            <button (click)="decrease(item)">−</button>
-            <span>{{ item.qty }}</span>
-            <button (click)="increase(item)">+</button>
-          </div>
-          <p class="cart-sum">{{ item.price * item.qty }} ₸</p>
-          <button class="btn-remove" (click)="remove(item)">🗑️</button>
+  <header class="cart-hero">
+    <div class="cart-hero-blob1"></div>
+    <div class="cart-hero-blob2"></div>
+    <div class="cart-hero-inner">
+      <div class="cart-hero-left">
+        <div class="cart-hero-logo">🛍️ Shop<span>Mind</span></div>
+        <div class="cart-hero-tagline">Ваша корзина</div>
+      </div>
+      <a routerLink="/" class="btn-back-hero">← Продолжить покупки</a>
+    </div>
+  </header>
+
+  <div class="cart-main">
+
+    @if (items.length > 0) {
+
+      <div class="cart-summary">
+        <div class="sum-card">
+          <div class="sum-label">Товаров</div>
+          <div class="sum-value">{{ totalItems }}</div>
         </div>
-      }
-    </div>
+        <div class="sum-card">
+          <div class="sum-label">Позиций</div>
+          <div class="sum-value">{{ items.length }}</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-label">Итого</div>
+          <div class="sum-value">{{ total | number }}₸</div>
+        </div>
+      </div>
 
-    <div class="cart-footer">
-      <p class="cart-total">Итого: <strong>{{ total }} ₸</strong></p>
-      <button class="btn-checkout" (click)="checkout()">Оформить заказ</button>
-      <a routerLink="/" class="btn-back">← Продолжить покупки</a>
-    </div>
-  } @else {
-    <div class="cart-empty">
-      <p>Корзина пуста 😔</p>
-      <a routerLink="/" class="btn-back">← В магазин</a>
-    </div>
-  }
+      <div class="section-head">Product List</div>
+
+      <div class="cart-list">
+        @for (item of items; track item.id) {
+          <div class="cart-item">
+
+            <img [src]="item.image" *ngIf="item.image" class="cart-img" [alt]="item.name" />
+            <div class="cart-no-img" *ngIf="!item.image">Фото</div>
+
+            <div class="cart-info">
+              <h3>{{ item.name }}</h3>
+              <p class="cart-price">{{ item.price | number }} ₸ / шт.</p>
+            </div>
+
+            <div class="cart-qty">
+              <button (click)="decrease(item)">−</button>
+              <span>{{ item.qty }}</span>
+              <button (click)="increase(item)">+</button>
+            </div>
+
+            <p class="cart-sum">{{ item.price * item.qty | number }} ₸</p>
+
+            <button class="btn-remove" (click)="remove(item)" title="Удалить">✕</button>
+          </div>
+        }
+      </div>
+
+      <div class="cart-divider">
+        <hr /><span>Итого к оплате</span><hr />
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          <div class="cart-total-label">Сумма заказа</div>
+          <div class="cart-total-amount">{{ total | number }} ₸</div>
+        </div>
+        <a routerLink="/" class="btn-back">← Назад</a>
+        <button class="btn-checkout" (click)="checkout()">
+          Оформить заказ →
+        </button>
+      </div>
+
+    } @else {
+
+      <div class="cart-empty">
+        <div class="empty-icon">🛒</div>
+        <p>Корзина пуста</p>
+        <a routerLink="/" class="btn-back">← В магазин</a>
+      </div>
+
+    }
+
+  </div>
 </div>

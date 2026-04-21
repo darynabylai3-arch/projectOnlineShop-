@@ -1,4 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, NgZone } from '@angular/core';
+import {
+  Component, OnInit, ViewChild, ElementRef,
+  AfterViewChecked, ChangeDetectorRef, NgZone
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat';
@@ -7,6 +10,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   time: string;
+  reaction?: string;
 }
 
 @Component({
@@ -26,6 +30,17 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   text = '';
   messages: Message[] = [];
 
+  // ── Quick suggestions shown before first message ──
+  suggestions = [
+    '🔥 Акции и скидки',
+    '📦 Доставка',
+    '↩️ Возврат товара',
+    '💳 Оплата',
+  ];
+
+  // ── Reactions ──
+  reactionEmojis = ['👍', '❤️', '😮'];
+
   constructor(
     private chatService: ChatService,
     private cdr: ChangeDetectorRef,
@@ -43,13 +58,13 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
     } catch {}
   }
 
+  private now(): string {
+    return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  }
+
   private addMessage(role: 'user' | 'assistant', content: string) {
     this.zone.run(() => {
-      this.messages = [...this.messages, {
-        role,
-        content,
-        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-      }];
+      this.messages = [...this.messages, { role, content, time: this.now() }];
       this.cdr.detectChanges();
     });
   }
@@ -57,7 +72,32 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   toggle() {
     this.isOpen = !this.isOpen;
     this.hasNew = false;
-    if (this.isOpen) setTimeout(() => this.inputRef?.nativeElement.focus(), 100);
+    if (this.isOpen) setTimeout(() => this.inputRef?.nativeElement?.focus(), 120);
+  }
+
+  // ── Send chip suggestion as a message ──
+  sendSuggestion(text: string) {
+    this.text = text;
+    this.send();
+  }
+
+  // ── React to assistant message ──
+  react(msg: Message, emoji: string) {
+    msg.reaction = msg.reaction === emoji ? undefined : emoji;
+    this.cdr.detectChanges();
+  }
+
+  // ── Clear conversation ──
+  clearChat() {
+    this.messages = [];
+    this.addMessage('assistant', '🧹 Чат очищен. Чем могу помочь?');
+  }
+
+  // ── Auto-resize textarea ──
+  autoResize(event: Event) {
+    const el = event.target as HTMLTextAreaElement;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
   }
 
   send() {
@@ -66,6 +106,14 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
 
     this.addMessage('user', msg);
     this.text = '';
+
+    // Reset textarea height
+    setTimeout(() => {
+      if (this.inputRef?.nativeElement) {
+        this.inputRef.nativeElement.style.height = 'auto';
+      }
+    });
+
     this.isLoading = true;
     this.cdr.detectChanges();
 

@@ -1,17 +1,156 @@
-<div class="detail-wrapper">
-  @if (product) {
-    <div class="detail-card">
-      <img [src]="product.image" *ngIf="product.image" class="detail-img" />
-      <div class="detail-info">
-        <h1>{{ product.name }}</h1>
-        <p class="detail-desc">{{ product.description }}</p>
-        <p class="detail-price">{{ product.price }} ₸</p>
-        <p class="detail-stock">В наличии: {{ product.stock }} шт.</p>
-        <button class="btn-cart" (click)="addToCart()">🛒 В корзину</button>
-        <a routerLink="/" class="btn-back">← Назад</a>
+<div class="detail-shop">
+  <!-- HERO с навигацией -->
+  <header class="hero">
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-inner">
+      <div class="hero-brand">
+        <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
+        <div class="hero-tagline">Smart shopping experience</div>
+      </div>
+      <div class="hero-buttons">
+        <a routerLink="/" class="btn-hero-outline">← В каталог</a>
+        <a routerLink="/cart" class="btn-hero-solid">🛒 Корзина</a>
       </div>
     </div>
-  } @else {
-    <p class="loading">Загрузка...</p>
-  }
+  </header>
+
+  <main class="detail-main" *ngIf="product; else loadingBlock">
+    <div class="detail-container">
+      <!-- Хлебные крошки (новая фича) -->
+      <div class="breadcrumbs">
+        <a routerLink="/">Главная</a>
+        <span class="separator">/</span>
+        <a routerLink="/">{{ product.category }}</a>
+        <span class="separator">/</span>
+        <span class="current">{{ product.name }}</span>
+      </div>
+
+      <div class="detail-grid">
+        <!-- Галерея изображений (новая фича) -->
+        <div class="gallery">
+          <div class="gallery-main">
+            <img [src]="selectedImage || product.image" [alt]="product.name" />
+            <div class="gallery-badge" *ngIf="getDiscount() > 0">
+              -{{ getDiscount() }}%
+            </div>
+          </div>
+          <div class="gallery-thumbs" *ngIf="product.images?.length > 0">
+            <div 
+              class="thumb" 
+              *ngFor="let img of product.images" 
+              [class.active]="selectedImage === img"
+              (click)="selectedImage = img">
+              <img [src]="img" [alt]="product.name">
+            </div>
+          </div>
+        </div>
+
+        <!-- Информация о товаре -->
+        <div class="info">
+          <div class="category-tag">{{ product.category }}</div>
+          <h1>{{ product.name }}</h1>
+          
+          <!-- Рейтинг (новая фича) -->
+          <div class="rating">
+            <div class="stars">
+              <span *ngFor="let s of getStars(product.rating || 0)" class="star">
+                {{ s }}
+              </span>
+            </div>
+            <span class="reviews" *ngIf="product.reviews_count">
+              {{ product.reviews_count }} отзывов
+            </span>
+          </div>
+
+          <p class="description">{{ product.description }}</p>
+
+          <!-- Цена и наличие -->
+          <div class="price-block">
+            <div class="prices">
+              <span *ngIf="product.old_price" class="price-old">{{ product.old_price }} ₸</span>
+              <span class="price-current">{{ product.price }} ₸</span>
+            </div>
+            <div class="stock-status" [class.low]="product.stock <= 5" [class.out]="product.stock === 0">
+              <span class="status-indicator"></span>
+              <span *ngIf="product.stock > 10">✅ В наличии ({{ product.stock }} шт.)</span>
+              <span *ngIf="product.stock <= 5 && product.stock > 0">⚠️ Осталось всего {{ product.stock }} шт.!</span>
+              <span *ngIf="product.stock === 0">❌ Нет в наличии</span>
+            </div>
+          </div>
+
+          <!-- Количество и кнопки -->
+          <div class="actions" *ngIf="product.stock > 0">
+            <div class="quantity">
+              <button (click)="decrementQty()" [disabled]="qty <= 1">−</button>
+              <input type="number" [(ngModel)]="qty" (change)="validateQty()" min="1" [max]="product.stock">
+              <button (click)="incrementQty()" [disabled]="qty >= product.stock">+</button>
+            </div>
+            <button class="btn-cart" (click)="addToCart()">
+              🛒 Добавить в корзину
+            </button>
+          </div>
+
+          <div class="disabled-actions" *ngIf="product.stock === 0">
+            <button class="btn-disabled" disabled>Товар закончился</button>
+          </div>
+
+          <!-- Дополнительная информация -->
+          <div class="meta-info">
+            <div class="meta-item">
+              <span class="meta-label">Артикул:</span>
+              <span class="meta-value">{{ product.sku || 'N/A' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Бренд:</span>
+              <span class="meta-value">{{ product.brand || 'ShopMind' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Доставка:</span>
+              <span class="meta-value">Бесплатно от 5000 ₸</span>
+            </div>
+          </div>
+
+          <!-- Кнопки соц. сетей (креативная фича) -->
+          <div class="share-buttons">
+            <span class="share-label">Поделиться:</span>
+            <button class="share-btn tg" (click)="shareTelegram()">📱 Telegram</button>
+            <button class="share-btn wa" (click)="shareWhatsApp()">💬 WhatsApp</button>
+            <button class="share-btn vk" (click)="shareVK()">🌐 VK</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Блок "Вам также может понравиться" (новая фича) -->
+      <div class="related" *ngIf="relatedProducts.length > 0">
+        <h2 class="related-title">✨ Вам также может понравиться</h2>
+        <div class="related-grid">
+          <div class="related-card" *ngFor="let rp of relatedProducts">
+            <img [src]="rp.image" [alt]="rp.name">
+            <div class="related-info">
+              <h3>{{ rp.name }}</h3>
+              <p class="related-price">{{ rp.price }} ₸</p>
+              <a [routerLink]="['/product', rp.id]" class="btn-related">Смотреть</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Анимированная плашка "Только сегодня" (креативная фича) -->
+      <div class="flash-sale" *ngIf="getDiscount() > 15">
+        <div class="flash-content">
+          <span class="flash-icon">⚡</span>
+          <span class="flash-text">СУПЕР ЦЕНА! Скидка {{ getDiscount() }}% только сегодня</span>
+          <span class="flash-timer">🔥 {{ getTimeLeft() }}</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <ng-template #loadingBlock>
+    <div class="loading-skeleton">
+      <div class="skeleton-hero"></div>
+      <div class="skeleton-card"></div>
+    </div>
+  </ng-template>
 </div>

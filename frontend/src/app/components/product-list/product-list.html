@@ -1,6 +1,5 @@
 <div class="shop">
 
-  <!-- HERO -->
   <header class="hero">
     <div class="hero-blob1"></div>
     <div class="hero-blob2"></div>
@@ -25,7 +24,6 @@
 
   <main class="products-section">
 
-    <!-- STATS STRIP -->
     <div class="stats-strip">
       <div class="stat-card">
         <div class="stat-label">Товаров</div>
@@ -41,7 +39,6 @@
       </div>
     </div>
 
-    <!-- TOOLBAR -->
     <div class="toolbar">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
@@ -61,7 +58,6 @@
       </select>
     </div>
 
-    <!-- CATEGORIES -->
     <div class="categories">
       <button
         [class.active]="selectedCategory === null"
@@ -76,7 +72,6 @@
       </button>
     </div>
 
-    <!-- SECTION HEAD -->
     <div class="section-head">
       <div class="section-title">Каталог товаров</div>
       <div class="view-toggle">
@@ -97,7 +92,6 @@
       </div>
     </div>
 
-    <!-- SKELETON LOADING -->
     <ng-container *ngIf="loading">
       <div [class]="viewMode === 'grid' ? 'products-grid' : 'products-list'">
         <div class="skeleton-card" *ngFor="let i of [1,2,3,4]">
@@ -110,7 +104,6 @@
       </div>
     </ng-container>
 
-    <!-- PRODUCTS -->
     <ng-container *ngIf="!loading">
       <div
         *ngIf="products && products.length > 0; else emptyBlock"
@@ -118,14 +111,12 @@
 
         <div class="product-card" *ngFor="let p of products">
 
-          <!-- Badge -->
           <span *ngIf="p.is_new" class="card-badge badge-new">Новинка</span>
           <span *ngIf="p.is_hit && !p.is_new" class="card-badge badge-hit">Хит</span>
           <span *ngIf="p.old_price && !p.is_new && !p.is_hit" class="card-badge badge-sale">
             -{{ getDiscount(p) }}%
           </span>
 
-          <!-- Wishlist -->
           <button
             class="wish-btn"
             [class.active]="isWished(p.id)"
@@ -166,7 +157,6 @@
 
   </main>
 
-  <!-- FLOATING CART -->
   <a routerLink="/cart" class="floating-cart">
     🛒
     <span *ngIf="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
