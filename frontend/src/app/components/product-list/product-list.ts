@@ -19,20 +19,66 @@ export class ProductList implements OnInit {
 
   allProducts: any[] = [];
   products: any[] = [];
-  categories: number[] = [];
-  selectedCategory: number | null = null;
+  categories: any[] = [];
+  selectedCategory: any = null;
   searchQuery = '';
+  sortMode = 'default';
+  viewMode: 'grid' | 'list' = 'grid';
+  loading = true;
+
+  // ── Wishlist ──────────────────────────────────────────
+  private wishlist: Set<number> = new Set(
+    JSON.parse(localStorage.getItem('wishlist') || '[]')
+  );
+
+  isWished(id: number): boolean {
+    return this.wishlist.has(id);
+  }
+
+  toggleWish(id: number) {
+    if (this.wishlist.has(id)) {
+      this.wishlist.delete(id);
+    } else {
+      this.wishlist.add(id);
+    }
+    localStorage.setItem('wishlist', JSON.stringify([...this.wishlist]));
+    this.cdr.detectChanges();
+  }
+
+  get wishlistCount(): number {
+    return this.wishlist.size;
+  }
+
+  // ── Discount helper ───────────────────────────────────
+  getDiscount(p: any): number {
+    if (!p.old_price || !p.price) return 0;
+    return Math.round((1 - p.price / p.old_price) * 100);
+  }
+
+  get filteredCount(): number {
+    return this.products.length;
+  }
 
   get isAdmin() { return this.auth.isAdmin(); }
   get isLoggedIn() { return this.auth.isLoggedIn(); }
+
   get username() {
     const token = localStorage.getItem('access');
     if (!token) return '';
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.username;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.username;
+    } catch {
+      return '';
+    }
   }
 
   logout() { this.auth.logout(); }
+
+  get cartCount(): number {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    return cart.reduce((sum: number, i: any) => sum + (i.qty || 0), 0);
+  }
 
   ngOnInit() {
     this.http.get<any[]>('http://localhost:8000/api/products/', {
@@ -42,32 +88,63 @@ export class ProductList implements OnInit {
       next: (data) => {
         this.allProducts = [...data];
         this.categories = [...new Set(data.map(p => p.category))];
+        this.loading = false;
         this.applyFilters();
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('ERROR:', err)
+      error: (err) => {
+        console.error('ERROR:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  selectCategory(cat: number | null) {
+  selectCategory(cat: any) {
     this.selectedCategory = cat;
     this.applyFilters();
   }
-  get cartCount() {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  return cart.reduce((sum: number, i: any) => sum + i.qty, 0);
-}
 
+  // ── Filter + Sort ─────────────────────────────────────
   applyFilters() {
     let filtered = [...this.allProducts];
+
+    // Category
     if (this.selectedCategory !== null) {
       filtered = filtered.filter(p => p.category === this.selectedCategory);
     }
+
+    // Search
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description && p.description.toLowerCase().includes(q))
+      );
     }
+
+    // Sort
+    switch (this.sortMode) {
+      case 'price_asc':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_desc':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'name_asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+        break;
+      case 'newest':
+        filtered.sort((a, b) =>
+          new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+        );
+        break;
+      default:
+        break;
+    }
+
     this.products = filtered;
     this.cdr.detectChanges();
   }
 }
+
