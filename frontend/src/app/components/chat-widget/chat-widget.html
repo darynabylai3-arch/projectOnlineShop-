@@ -1,6 +1,5 @@
 <div class="cw-wrap">
 
-  <!-- TOGGLE BUTTON -->
   <button class="cw-btn" (click)="toggle()" [class.open]="isOpen">
     <ng-container *ngIf="!isOpen">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -15,10 +14,8 @@
     <span class="cw-dot" *ngIf="hasNew && !isOpen"></span>
   </button>
 
-  <!-- CHAT WINDOW -->
   <div class="cw-window" [class.visible]="isOpen">
 
-    <!-- HEADER -->
     <div class="cw-header">
       <div class="cw-header-blob"></div>
       <div class="cw-header-inner">
@@ -39,14 +36,12 @@
       </div>
     </div>
 
-    <!-- QUICK SUGGESTIONS -->
     <div class="cw-suggestions" *ngIf="messages.length <= 1">
       <button class="cw-chip" *ngFor="let s of suggestions" (click)="sendSuggestion(s)">
         {{ s }}
       </button>
     </div>
 
-    <!-- MESSAGES -->
     <div class="cw-messages" #messagesBox>
 
       <div *ngFor="let m of messages; let i = index"
@@ -78,7 +73,6 @@
 
       </div>
 
-      <!-- Typing indicator -->
       <div class="cw-typing-row" *ngIf="isLoading">
         <div class="cw-ava-sm">🤖</div>
         <div class="cw-typing">
@@ -88,7 +82,6 @@
 
     </div>
 
-    <!-- INPUT -->
     <div class="cw-input">
       <textarea
         #inputRef

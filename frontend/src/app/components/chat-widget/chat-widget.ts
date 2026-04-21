@@ -30,7 +30,6 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   text = '';
   messages: Message[] = [];
 
-  // ── Quick suggestions shown before first message ──
   suggestions = [
     '🔥 Акции и скидки',
     '📦 Доставка',
@@ -38,7 +37,6 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
     '💳 Оплата',
   ];
 
-  // ── Reactions ──
   reactionEmojis = ['👍', '❤️', '😮'];
 
   constructor(
@@ -75,25 +73,21 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
     if (this.isOpen) setTimeout(() => this.inputRef?.nativeElement?.focus(), 120);
   }
 
-  // ── Send chip suggestion as a message ──
   sendSuggestion(text: string) {
     this.text = text;
     this.send();
   }
 
-  // ── React to assistant message ──
   react(msg: Message, emoji: string) {
     msg.reaction = msg.reaction === emoji ? undefined : emoji;
     this.cdr.detectChanges();
   }
 
-  // ── Clear conversation ──
   clearChat() {
     this.messages = [];
     this.addMessage('assistant', '🧹 Чат очищен. Чем могу помочь?');
   }
 
-  // ── Auto-resize textarea ──
   autoResize(event: Event) {
     const el = event.target as HTMLTextAreaElement;
     el.style.height = 'auto';
@@ -107,7 +101,6 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
     this.addMessage('user', msg);
     this.text = '';
 
-    // Reset textarea height
     setTimeout(() => {
       if (this.inputRef?.nativeElement) {
         this.inputRef.nativeElement.style.height = 'auto';

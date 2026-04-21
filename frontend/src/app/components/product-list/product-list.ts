@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
+import { ProductService, Category } from '../../services/product';
 
 @Component({
   selector: 'app-product-list',
@@ -16,23 +17,32 @@ export class ProductList implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private auth = inject(AuthService);
+  private productService = inject(ProductService);
 
   allProducts: any[] = [];
   products: any[] = [];
-  categories: any[] = [];
-  selectedCategory: any = null;
+  categories: Category[] = []; 
+  selectedCategory: number | null = null;
   searchQuery = '';
   sortMode = 'default';
   viewMode: 'grid' | 'list' = 'grid';
   loading = true;
+  drawerOpen = false;
 
   private wishlist: Set<number> = new Set(
     JSON.parse(localStorage.getItem('wishlist') || '[]')
   );
 
-  isWished(id: number): boolean {
-    return this.wishlist.has(id);
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category?.name || 'Без категории';
   }
+
+  get wishlistProducts(): any[] {
+    return this.allProducts.filter(p => this.wishlist.has(p.id));
+  }
+
+  isWished(id: number): boolean { return this.wishlist.has(id); }
 
   toggleWish(id: number) {
     if (this.wishlist.has(id)) {
@@ -44,19 +54,30 @@ export class ProductList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  get wishlistCount(): number {
-    return this.wishlist.size;
+  clearWishlist() {
+    this.wishlist.clear();
+    localStorage.setItem('wishlist', '[]');
+    this.cdr.detectChanges();
   }
+
+  openDrawer() {
+    this.drawerOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDrawer() {
+    this.drawerOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  get wishlistCount(): number { return this.wishlist.size; }
 
   getDiscount(p: any): number {
     if (!p.old_price || !p.price) return 0;
     return Math.round((1 - p.price / p.old_price) * 100);
   }
 
-  get filteredCount(): number {
-    return this.products.length;
-  }
-
+  get filteredCount(): number { return this.products.length; }
   get isAdmin() { return this.auth.isAdmin(); }
   get isLoggedIn() { return this.auth.isLoggedIn(); }
 
@@ -66,9 +87,7 @@ export class ProductList implements OnInit {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.username;
-    } catch {
-      return '';
-    }
+    } catch { return ''; }
   }
 
   logout() { this.auth.logout(); }
@@ -79,13 +98,22 @@ export class ProductList implements OnInit {
   }
 
   ngOnInit() {
+    this.productService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+      }
+    });
+
     this.http.get<any[]>('http://localhost:8000/api/products/', {
       headers: { 'Accept': 'application/json' },
       withCredentials: true
     }).subscribe({
       next: (data) => {
         this.allProducts = [...data];
-        this.categories = [...new Set(data.map(p => p.category))];
         this.loading = false;
         this.applyFilters();
         this.cdr.detectChanges();
@@ -98,8 +126,8 @@ export class ProductList implements OnInit {
     });
   }
 
-  selectCategory(cat: any) {
-    this.selectedCategory = cat;
+  selectCategory(catId: number | null) {
+    this.selectedCategory = catId;
     this.applyFilters();
   }
 
@@ -119,26 +147,15 @@ export class ProductList implements OnInit {
     }
 
     switch (this.sortMode) {
-      case 'price_asc':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price_desc':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'name_asc':
-        filtered.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-        break;
-      case 'newest':
-        filtered.sort((a, b) =>
-          new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
-        );
-        break;
-      default:
-        break;
+      case 'price_asc': filtered.sort((a, b) => a.price - b.price); break;
+      case 'price_desc': filtered.sort((a, b) => b.price - a.price); break;
+      case 'name_asc': filtered.sort((a, b) => a.name.localeCompare(b.name, 'en')); break;
+      case 'newest': filtered.sort((a, b) =>
+        new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      ); break;
     }
 
     this.products = filtered;
     this.cdr.detectChanges();
   }
 }
-

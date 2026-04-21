@@ -36,4 +36,11 @@ export class ProductDetail implements OnInit {
     localStorage.setItem('cart', JSON.stringify(cart));
     alert('Товар добавлен в корзину!');
   }
+
+  // Метод для расчета скидки - добавьте его ТОЛЬКО ОДИН РАЗ
+  getDiscount(product: any): number {
+    if (!product.old_price || !product.price) return 0;
+    if (product.old_price <= product.price) return 0;
+    return Math.round((1 - product.price / product.old_price) * 100);
+  }
 }

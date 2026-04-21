@@ -1,17 +1,44 @@
 <div class="detail-wrapper">
-  @if (product) {
-    <div class="detail-card">
-      <img [src]="product.image" *ngIf="product.image" class="detail-img" />
-      <div class="detail-info">
-        <h1>{{ product.name }}</h1>
-        <p class="detail-desc">{{ product.description }}</p>
-        <p class="detail-price">{{ product.price }} ₸</p>
-        <p class="detail-stock">В наличии: {{ product.stock }} шт.</p>
-        <button class="btn-cart" (click)="addToCart()">🛒 В корзину</button>
-        <a routerLink="/" class="btn-back">← Назад</a>
+
+  <header class="detail-hero">
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
+        <div class="hero-tagline">Smart shopping experience</div>
       </div>
+      <a routerLink="/" class="btn-back">← Back</a>
     </div>
-  } @else {
-    <p class="loading">Загрузка...</p>
-  }
+  </header>
+
+  <main class="detail-main">
+    @if (product) {
+      <div class="detail-card">
+
+        <img *ngIf="product.image; else noImg" [src]="product.image" class="detail-img" />
+        <ng-template #noImg>
+          <div class="detail-no-image">No image</div>
+        </ng-template>
+
+        <div class="detail-info">
+          <h1>{{ product.name }}</h1>
+          <div class="detail-divider"></div>
+          <p class="detail-desc">{{ product.description }}</p>
+          <div class="detail-price">{{ product.price }} ₸</div>
+          <div class="detail-stock">
+            <span class="stock-dot"></span>
+            In stock: {{ product.stock }} pcs.
+          </div>
+          <div class="detail-actions">
+            <button class="btn-cart" (click)="addToCart()">🛒 Add to cart</button>
+          </div>
+        </div>
+
+      </div>
+    } @else {
+      <p class="loading">Loading...</p>
+    }
+  </main>
+
 </div>

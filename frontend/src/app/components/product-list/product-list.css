@@ -577,3 +577,272 @@
   .search-wrap, .sort-select { width: 100%; }
 }
 
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 46, 0.35);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.drawer-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.wishlist-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 340px;
+  background: white;
+  z-index: 101;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  border-left: 0.5px solid #ebebfa;
+}
+.wishlist-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  padding: 24px 20px 16px;
+  border-bottom: 0.5px solid #ebebfa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.drawer-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-title-count {
+  background: #6c63ff;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.drawer-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1.5px solid #ebebfa;
+  background: white;
+  font-size: 16px;
+  color: #bbb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.drawer-close:hover { border-color: #a89fff; color: #6c63ff; }
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.drawer-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+}
+.drawer-empty-icon { font-size: 40px; opacity: 0.25; }
+.drawer-empty p {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #bbb;
+  font-weight: 600;
+  text-align: center;
+}
+
+.wish-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #f4f4fb;
+  border-radius: 12px;
+  border: 0.5px solid #ebebfa;
+  padding: 10px 12px;
+  transition: border-color 0.2s;
+}
+.wish-card:hover { border-color: #d0cdf5; }
+
+.wish-card-img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.wish-card-no-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eeedfe 0%, #d6d2fc 100%);
+  flex-shrink: 0;
+}
+
+.wish-card-info { flex: 1; min-width: 0; }
+.wish-card-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.wish-card-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6c63ff;
+}
+
+.wish-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.wish-rm-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid #ebebfa;
+  background: white;
+  font-size: 13px;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.wish-rm-btn:hover { border-color: #e74c3c; color: #e74c3c; background: #fff5f5; }
+
+.wish-go-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid #ebebfa;
+  background: white;
+  font-size: 12px;
+  color: #a89fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  text-decoration: none;
+  line-height: 1;
+}
+.wish-go-btn:hover { border-color: #6c63ff; color: #6c63ff; background: #eeedfe; }
+
+.drawer-footer {
+  padding: 16px 20px;
+  border-top: 0.5px solid #ebebfa;
+  flex-shrink: 0;
+}
+
+.drawer-clear-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1.5px solid #ebebfa;
+  background: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #bbb;
+  cursor: pointer;
+  font-family: 'Josefin Sans', sans-serif;
+  transition: all 0.2s;
+}
+.drawer-clear-btn:hover { border-color: #e74c3c; color: #e74c3c; background: #fff5f5; }
+
+.btn-hero-wish {
+  position: relative;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+.btn-hero-wish:hover { background: rgba(255,255,255,0.15); }
+
+.hero-wish-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #e74c3c;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  line-height: 1;
+  animation: wishPop 0.3s ease;
+}
+
+@keyframes wishPop {
+  0% { transform: scale(0.5); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.stat-card.clickable:hover {
+  border-color: #d0cdf5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.1);
+}
+
+@media (max-width: 600px) {
+  .wishlist-drawer { width: 100vw; }
+}

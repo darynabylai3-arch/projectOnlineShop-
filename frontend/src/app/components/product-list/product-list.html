@@ -1,5 +1,49 @@
 <div class="shop">
 
+  <div class="drawer-overlay" [class.open]="drawerOpen" (click)="closeDrawer()"></div>
+
+  <div class="wishlist-drawer" [class.open]="drawerOpen">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        ♥ Favorites
+        <span class="drawer-title-count">{{ wishlistCount }}</span>
+      </div>
+      <button class="drawer-close" (click)="closeDrawer()">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <ng-container *ngIf="wishlistProducts.length > 0; else drawerEmpty">
+        <div class="wish-card" *ngFor="let p of wishlistProducts">
+          <img *ngIf="p.image; else noWishImg" [src]="p.image" class="wish-card-img" />
+          <ng-template #noWishImg>
+            <div class="wish-card-no-img"></div>
+          </ng-template>
+          <div class="wish-card-info">
+            <div class="wish-card-name">{{ p.name }}</div>
+            <div class="wish-card-price">{{ p.price }} ₸</div>
+          </div>
+          <div class="wish-card-actions">
+            <a [routerLink]="['/product', p.id]" class="wish-go-btn" (click)="closeDrawer()">→</a>
+            <button class="wish-rm-btn" (click)="toggleWish(p.id)" title="Remove">✕</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #drawerEmpty>
+        <div class="drawer-empty">
+          <div class="drawer-empty-icon">♡</div>
+          <p>Favorites is empty.<br>Add items by clicking ♡</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="drawer-footer" *ngIf="wishlistProducts.length > 0">
+      <button class="drawer-clear-btn" (click)="clearWishlist()">
+        Clear favorites
+      </button>
+    </div>
+  </div>
+
   <header class="hero">
     <div class="hero-blob1"></div>
     <div class="hero-blob2"></div>
@@ -9,14 +53,19 @@
         <div class="hero-tagline">Smart shopping experience</div>
       </div>
       <div class="hero-buttons">
+        <button class="btn-hero-wish" (click)="openDrawer()" title="Favorites">
+          ♥
+          <span *ngIf="wishlistCount > 0" class="hero-wish-badge">{{ wishlistCount }}</span>
+        </button>
+
         <ng-container *ngIf="!isLoggedIn">
-          <a routerLink="/login" class="btn-hero-outline">Войти</a>
-          <a routerLink="/register" class="btn-hero-solid">Регистрация</a>
+          <a routerLink="/login" class="btn-hero-outline">Login</a>
+          <a routerLink="/register" class="btn-hero-solid">Register</a>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
-          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">Админ панель</a>
+          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">Admin panel</a>
           <span class="hero-username">👤 {{ username }}</span>
-          <button class="btn-hero-outline" (click)="logout()">Выйти</button>
+          <button class="btn-hero-outline" (click)="logout()">Logout</button>
         </ng-container>
       </div>
     </div>
@@ -26,15 +75,15 @@
 
     <div class="stats-strip">
       <div class="stat-card">
-        <div class="stat-label">Товаров</div>
+        <div class="stat-label">Products</div>
         <div class="stat-value">{{ filteredCount }}</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Избранное</div>
+      <div class="stat-card clickable" (click)="openDrawer()">
+        <div class="stat-label">Favorites</div>
         <div class="stat-value">{{ wishlistCount }}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">В корзине</div>
+        <div class="stat-label">In cart</div>
         <div class="stat-value">{{ cartCount }}</div>
       </div>
     </div>
@@ -44,51 +93,35 @@
         <span class="search-icon">⌕</span>
         <input
           type="text"
-          placeholder="Поиск товара..."
+          placeholder="Search products..."
           [(ngModel)]="searchQuery"
           (input)="applyFilters()"
         />
       </div>
       <select class="sort-select" [(ngModel)]="sortMode" (change)="applyFilters()">
-        <option value="default">По умолчанию</option>
-        <option value="price_asc">Цена: по возрастанию</option>
-        <option value="price_desc">Цена: по убыванию</option>
-        <option value="name_asc">Название: А → Я</option>
-        <option value="newest">Новинки</option>
+        <option value="default">Default</option>
+        <option value="price_asc">Price: low to high</option>
+        <option value="price_desc">Price: high to low</option>
+        <option value="name_asc">Name: A → Z</option>
+        <option value="newest">Newest</option>
       </select>
     </div>
 
     <div class="categories">
-      <button
-        [class.active]="selectedCategory === null"
-        (click)="selectCategory(null)">
-        Все
-      </button>
+      <button [class.active]="selectedCategory === null" (click)="selectCategory(null)">All</button>
       <button
         *ngFor="let cat of categories"
-        [class.active]="selectedCategory === cat"
-        (click)="selectCategory(cat)">
-        {{ cat }}
+        [class.active]="selectedCategory === cat.id"
+        (click)="selectCategory(cat.id)">
+        {{ cat.name }}
       </button>
     </div>
 
     <div class="section-head">
-      <div class="section-title">Каталог товаров</div>
+      <div class="section-title">Catalog</div>
       <div class="view-toggle">
-        <button
-          class="view-btn"
-          [class.active]="viewMode === 'grid'"
-          (click)="viewMode = 'grid'"
-          title="Сетка">
-          ▦
-        </button>
-        <button
-          class="view-btn"
-          [class.active]="viewMode === 'list'"
-          (click)="viewMode = 'list'"
-          title="Список">
-          ☰
-        </button>
+        <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'" title="Grid">▦</button>
+        <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'" title="List">☰</button>
       </div>
     </div>
 
@@ -110,26 +143,17 @@
         [class]="viewMode === 'grid' ? 'products-grid' : 'products-list'">
 
         <div class="product-card" *ngFor="let p of products">
+          <span *ngIf="p.is_new" class="card-badge badge-new">New</span>
+          <span *ngIf="p.is_hit && !p.is_new" class="card-badge badge-hit">Hit</span>
+          <span *ngIf="p.old_price && !p.is_new && !p.is_hit" class="card-badge badge-sale">-{{ getDiscount(p) }}%</span>
 
-          <span *ngIf="p.is_new" class="card-badge badge-new">Новинка</span>
-          <span *ngIf="p.is_hit && !p.is_new" class="card-badge badge-hit">Хит</span>
-          <span *ngIf="p.old_price && !p.is_new && !p.is_hit" class="card-badge badge-sale">
-            -{{ getDiscount(p) }}%
-          </span>
-
-          <button
-            class="wish-btn"
-            [class.active]="isWished(p.id)"
-            (click)="toggleWish(p.id)"
-            title="В избранное">
+          <button class="wish-btn" [class.active]="isWished(p.id)" (click)="toggleWish(p.id)" title="Add to favorites">
             {{ isWished(p.id) ? '♥' : '♡' }}
           </button>
 
           <div class="image-wrapper">
             <img *ngIf="p.image; else noImage" [src]="p.image" alt="{{ p.name }}">
-            <ng-template #noImage>
-              <div class="no-image">No image</div>
-            </ng-template>
+            <ng-template #noImage><div class="no-image">No image</div></ng-template>
           </div>
 
           <div class="card-body">
@@ -140,17 +164,16 @@
                 <span *ngIf="p.old_price" class="price-old">{{ p.old_price }} ₸</span>
                 <span class="price">{{ p.price }} ₸</span>
               </div>
-              <a [routerLink]="['/product', p.id]" class="btn-buy">Подробнее</a>
+              <a [routerLink]="['/product', p.id]" class="btn-buy">Details</a>
             </div>
           </div>
-
         </div>
       </div>
 
       <ng-template #emptyBlock>
         <div class="empty">
           <div class="empty-icon">🔍</div>
-          <p>Товаров не найдено</p>
+          <p>No products found</p>
         </div>
       </ng-template>
     </ng-container>
@@ -163,4 +186,3 @@
   </a>
 
 </div>
-
