@@ -31,10 +31,10 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   messages: Message[] = [];
 
   suggestions = [
-    '🔥 Акции и скидки',
-    '📦 Доставка',
-    '↩️ Возврат товара',
-    '💳 Оплата',
+    '🔥 Promotions & Discounts',
+    '📦 Delivery',
+    '↩️ Returns',
+    '💳 Payment',
   ];
 
   reactionEmojis = ['👍', '❤️', '😮'];
@@ -46,7 +46,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   ) {}
 
   ngOnInit() {
-    this.addMessage('assistant', '👋 Сәлем! Мен ShopMind ИИ-кеңесшісімін. Қалай көмектесе аламын?');
+    this.addMessage('assistant', '👋 Hello! I am ShopMind AI assistant. How can I help you?');
   }
 
   ngAfterViewChecked() {
@@ -57,7 +57,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
   }
 
   private now(): string {
-    return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
 
   private addMessage(role: 'user' | 'assistant', content: string) {
@@ -85,7 +85,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
 
   clearChat() {
     this.messages = [];
-    this.addMessage('assistant', '🧹 Чат очищен. Чем могу помочь?');
+    this.addMessage('assistant', '🧹 Chat cleared. How can I help you?');
   }
 
   autoResize(event: Event) {
@@ -121,8 +121,8 @@ export class ChatWidgetComponent implements OnInit, AfterViewChecked {
       },
       error: (err) => {
         this.zone.run(() => {
-          console.error('Ошибка:', err);
-          this.addMessage('assistant', '⚠️ Қате орын алды. Кейінірек қайталаңыз.');
+          console.error('Error:', err);
+          this.addMessage('assistant', '⚠️ An error occurred. Please try again later.');
           this.isLoading = false;
           this.cdr.detectChanges();
         });
