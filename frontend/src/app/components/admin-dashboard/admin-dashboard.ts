@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DecimalPipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Product, Category } from '../../services/product';
@@ -14,6 +14,7 @@ export class AdminDashboard implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];
   private productService = inject(ProductService);
+  private cdr = inject(ChangeDetectorRef);
 
   showForm = false;
   showCatForm = false;
@@ -25,19 +26,42 @@ export class AdminDashboard implements OnInit {
   imageFile: File | null = null;
 
   ngOnInit() {
+    console.log('AdminDashboard initialized');
     this.loadProducts();
     this.loadCategories();
   }
 
   loadProducts() {
-    this.productService.getAll().subscribe(p => this.products = p);
+    console.log('Loading products...');
+    this.productService.getAll().subscribe({
+      next: (p) => {
+        console.log('Products loaded:', p.length);
+        this.products = p;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading products:', err);
+        this.products = [];
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   loadCategories() {
-    this.productService.getAllCategories().subscribe(c => {
-      this.categories = c;
-      if (c.length > 0 && !this.form.category) {
-        this.form.category = c[0].id;
+    console.log('Loading categories...');
+    this.productService.getAllCategories().subscribe({
+      next: (c) => {
+        console.log('Categories loaded:', c.length);
+        this.categories = c;
+        if (c.length > 0 && !this.form.category) {
+          this.form.category = c[0].id;
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.categories = [];
+        this.cdr.detectChanges();
       }
     });
   }
@@ -61,7 +85,8 @@ export class AdminDashboard implements OnInit {
   }
 
   getCatName(id: number): string {
-    return this.categories.find(c => c.id === id)?.name ?? '—';
+    const cat = this.categories.find(c => c.id === id);
+    return cat?.name ?? '—';
   }
 
   countByCategory(catId: number): number {
@@ -76,14 +101,26 @@ export class AdminDashboard implements OnInit {
 
   openCreate() {
     this.editingId = null;
-    this.form = { name: '', description: '', price: 0, stock: 0, category: this.categories[0]?.id ?? 0 };
+    this.form = { 
+      name: '', 
+      description: '', 
+      price: 0, 
+      stock: 0, 
+      category: this.categories[0]?.id ?? 0 
+    };
     this.imageFile = null;
     this.showForm = true;
   }
 
   openEdit(p: Product) {
     this.editingId = p.id;
-    this.form = { name: p.name, description: p.description, price: p.price, stock: p.stock, category: p.category };
+    this.form = { 
+      name: p.name, 
+      description: p.description, 
+      price: p.price, 
+      stock: p.stock, 
+      category: p.category 
+    };
     this.imageFile = null;
     this.showForm = true;
   }
@@ -116,27 +153,58 @@ export class AdminDashboard implements OnInit {
       ? this.productService.update(this.editingId, fd)
       : this.productService.create(fd);
 
-    req.subscribe(() => {
-      this.showForm = false;
-      this.loadProducts();
+    req.subscribe({
+      next: () => {
+        console.log('Product saved successfully');
+        this.showForm = false;
+        this.loadProducts();
+        this.loadCategories();
+      },
+      error: (err) => {
+        console.error('Error saving product:', err);
+      }
     });
   }
 
   delete(id: number) {
-    if (!confirm('Удалить товар?')) return;
-    this.productService.delete(id).subscribe(() => this.loadProducts());
+    if (!confirm('Delete product?')) return;
+    this.productService.delete(id).subscribe({
+      next: () => {
+        console.log('Product deleted successfully');
+        this.loadProducts();
+      },
+      error: (err) => {
+        console.error('Error deleting product:', err);
+      }
+    });
   }
 
   addCategory() {
     if (!this.newCatName.trim()) return;
-    this.productService.createCategory(this.newCatName.trim()).subscribe(() => {
-      this.newCatName = '';
-      this.loadCategories();
+    this.productService.createCategory(this.newCatName.trim()).subscribe({
+      next: () => {
+        console.log('Category added successfully');
+        this.newCatName = '';
+        this.loadCategories();
+        this.loadProducts();
+      },
+      error: (err) => {
+        console.error('Error adding category:', err);
+      }
     });
   }
 
   deleteCategory(id: number) {
-    if (!confirm('Удалить категорию?')) return;
-    this.productService.deleteCategory(id).subscribe(() => this.loadCategories());
+    if (!confirm('Delete category?')) return;
+    this.productService.deleteCategory(id).subscribe({
+      next: () => {
+        console.log('Category deleted successfully');
+        this.loadCategories();
+        this.loadProducts();
+      },
+      error: (err) => {
+        console.error('Error deleting category:', err);
+      }
+    });
   }
 }
