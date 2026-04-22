@@ -60,7 +60,6 @@ def ai_chat(request):
         ai_reply = response.json()["choices"][0]["message"]["content"]
         print(f">>> ИИ ответил: {ai_reply[:80]}")
 
-        # Сохраняем если пользователь залогинен
         if request.user.is_authenticated:
             ChatMessage.objects.create(
                 user=request.user,

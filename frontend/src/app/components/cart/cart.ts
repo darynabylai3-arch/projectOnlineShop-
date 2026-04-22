@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { OrderService } from '../../services/order';
+import { AuthService } from '../../services/auth';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -12,6 +14,13 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class Cart implements OnInit {
   items: any[] = [];
+  isLoading = false;
+  orderSuccess = false;
+  orderError = '';
+
+  private orderService = inject(OrderService);
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.items = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -46,8 +55,31 @@ export class Cart implements OnInit {
   }
 
   checkout() {
-    alert('Заказ оформлен! Спасибо 🎉');
-    localStorage.removeItem('cart');
-    this.items = [];
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.isLoading = true;
+    this.orderError = '';
+
+    const orderItems = this.items.map(i => ({
+      product_id: i.id,
+      quantity: i.qty,
+    }));
+
+    this.orderService.createOrder(orderItems).subscribe({
+      next: (order) => {
+        this.isLoading = false;
+        this.orderSuccess = true;
+        localStorage.removeItem('cart');
+        this.items = [];
+        setTimeout(() => this.router.navigate(['/profile']), 2000);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.orderError = err.error?.error || 'Failed to place order. Please try again.';
+      }
+    });
   }
 }

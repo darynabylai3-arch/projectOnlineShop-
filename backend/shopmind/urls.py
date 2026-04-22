@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import ForgotPasswordView, ResetPasswordView
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -15,6 +14,9 @@ from django.contrib.auth.password_validation import validate_password
 
 from products.views import ProductViewSet, CategoryViewSet
 from orders.views import OrderViewSet
+from reviews.views import ReviewViewSet
+from users.views import ForgotPasswordView, ResetPasswordView
+from chat.views import ai_chat, chat_history
 
 class MyTokenSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -24,39 +26,47 @@ class MyTokenSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         return token
 
+
 class MyTokenView(TokenObtainPairView):
     serializer_class = MyTokenSerializer
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
+
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
+
     def post(self, request):
         s = RegisterSerializer(data=request.data)
         s.is_valid(raise_exception=True)
         s.save()
         return Response({'message': 'User created successfully'}, status=201)
 
+
 router = DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('categories', CategoryViewSet)
 router.register('orders', OrderViewSet, basename='order')
-from chat.views import ai_chat, chat_history
+router.register('reviews', ReviewViewSet, basename='review')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/reviews/', include('reviews.urls')),  
+    path('api/', include(router.urls)), 
     path('api/auth/token/', MyTokenView.as_view()),
     path('api/auth/token/refresh/', TokenRefreshView.as_view()),
     path('api/auth/register/', RegisterView.as_view()),
     path('api/auth/forgot-password/', ForgotPasswordView.as_view()),
     path('api/auth/reset-password/', ResetPasswordView.as_view()),
     path('api/chat/ai/', ai_chat),
-    path('api/chat/history/', chat_history),    
+    path('api/chat/history/', chat_history),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -401,3 +401,80 @@
   .cart-footer { flex-direction: column; align-items: stretch; }
   .btn-checkout, .btn-back { width: 100%; text-align: center; }
 }
+
+.order-success {
+  text-align: center;
+  padding: 80px 24px;
+  animation: fadeIn 0.4s ease;
+}
+
+.order-success .success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.order-success h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+}
+
+.order-success p {
+  color: #888;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.btn-profile-link {
+  display: inline-block;
+  padding: 13px 28px;
+  background: #6c63ff;
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-profile-link:hover {
+  background: #574fd6;
+  transform: translateY(-1px);
+}
+
+.order-error {
+  background: #fff5f5;
+  border: 1px solid #fdd;
+  color: #e74c3c;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.btn-checkout:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

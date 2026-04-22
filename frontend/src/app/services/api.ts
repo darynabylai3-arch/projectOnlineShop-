@@ -6,7 +6,6 @@ export class Api {
   private base = 'http://localhost:8000/api';
   private http = inject(HttpClient);
 
-  // Товары
   getProducts() {
     return this.http.get<any[]>(`${this.base}/products/`);
   }
@@ -15,7 +14,6 @@ export class Api {
     return this.http.get<any>(`${this.base}/products/${id}/`);
   }
 
-  // Заказы
   getOrders() {
     return this.http.get<any[]>(`${this.base}/orders/`);
   }

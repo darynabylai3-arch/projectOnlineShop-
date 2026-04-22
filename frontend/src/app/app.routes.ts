@@ -9,6 +9,7 @@ import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';  
+import { Profile } from './components/profile/profile';
 
 export const routes: Routes = [
   { path: '',            component: ProductList },
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'register',    component: Register },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'reset-password',  component: ResetPassword },
+  { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: 'admin',       component: AdminDashboard, canActivate: [adminGuard] },
-  { path: '**',          redirectTo: '' }
+  { path: '**',          redirectTo: '' }, 
 ];

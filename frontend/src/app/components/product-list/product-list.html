@@ -64,8 +64,8 @@
           <a routerLink="/register" class="btn-hero-solid">Register</a>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
-          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">Admin panel</a>
-          <span class="hero-username">👤 {{ username }}</span>
+          <a routerLink="/profile" class="btn-hero-profile">👤 {{ username }}</a>
+          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">Admin</a>
           <button class="btn-hero-outline" (click)="logout()">Logout</button>
         </ng-container>
       </div>

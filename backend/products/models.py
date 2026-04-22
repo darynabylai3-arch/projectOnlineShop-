@@ -14,3 +14,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+class ProductManager(models.Manager):
+    def in_stock(self):
+        return self.filter(stock__gt=0)
+    
+    def available(self):
+        return self.filter(stock__gt=0, is_active=True)

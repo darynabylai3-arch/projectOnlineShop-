@@ -6,43 +6,55 @@
     <div class="cart-hero-inner">
       <div class="cart-hero-left">
         <div class="cart-hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="cart-hero-tagline">Your cart</div>
+        <div class="cart-hero-tagline">{{ 'CART.TITLE' | translate }}</div>
       </div>
-      <a routerLink="/" class="btn-back-hero">← Continue shopping</a>
+      <a routerLink="/" class="btn-back-hero">{{ 'CART.BACK' | translate }}</a>
     </div>
   </header>
 
   <div class="cart-main">
 
-    @if (items.length > 0) {
+    @if (orderSuccess) {
+      <div class="order-success">
+        <div class="success-icon">🎉</div>
+        <h2>{{ 'CART.ORDER_PLACED' | translate }}</h2>
+        <p>{{ 'CART.ORDER_SUCCESS_MSG' | translate }}</p>
+        <a routerLink="/profile" class="btn-profile-link">{{ 'CART.VIEW_ORDERS' | translate }} →</a>
+      </div>
+    }
+
+    @if (orderError) {
+      <div class="order-error">⚠️ {{ orderError }}</div>
+    }
+
+    @if (!orderSuccess && items.length > 0) {
 
       <div class="cart-summary">
         <div class="sum-card">
-          <div class="sum-label">Items</div>
+          <div class="sum-label">{{ 'CART.ITEMS_COUNT' | translate }}</div>
           <div class="sum-value">{{ totalItems }}</div>
         </div>
         <div class="sum-card">
-          <div class="sum-label">Positions</div>
+          <div class="sum-label">{{ 'CART.POSITIONS' | translate }}</div>
           <div class="sum-value">{{ items.length }}</div>
         </div>
         <div class="sum-card">
-          <div class="sum-label">Total</div>
+          <div class="sum-label">{{ 'CART.TOTAL' | translate }}</div>
           <div class="sum-value">{{ total | number }}₸</div>
         </div>
       </div>
 
-      <div class="section-head">Product List</div>
+      <div class="section-head">{{ 'CART.PRODUCT_LIST' | translate }}</div>
 
       <div class="cart-list">
         @for (item of items; track item.id) {
           <div class="cart-item">
-
             <img [src]="item.image" *ngIf="item.image" class="cart-img" [alt]="item.name" />
-            <div class="cart-no-img" *ngIf="!item.image">Photo</div>
+            <div class="cart-no-img" *ngIf="!item.image">{{ 'CART.PHOTO' | translate }}</div>
 
             <div class="cart-info">
               <h3>{{ item.name }}</h3>
-              <p class="cart-price">{{ item.price | number }} ₸ / шт.</p>
+              <p class="cart-price">{{ item.price | number }} ₸ {{ 'CART.PER_UNIT' | translate }}</p>
             </div>
 
             <div class="cart-qty">
@@ -53,32 +65,36 @@
 
             <p class="cart-sum">{{ item.price * item.qty | number }} ₸</p>
 
-            <button class="btn-remove" (click)="remove(item)" title="Удалить">✕</button>
+            <button class="btn-remove" (click)="remove(item)" [title]="'CART.REMOVE' | translate">✕</button>
           </div>
         }
       </div>
 
       <div class="cart-divider">
-        <hr /><span>Total to pay</span><hr />
+        <hr /><span>{{ 'CART.ORDER_TOTAL' | translate }}</span><hr />
       </div>
 
       <div class="cart-footer">
         <div class="cart-total">
-          <div class="cart-total-label">Order amount</div>
+          <div class="cart-total-label">{{ 'CART.ORDER_LABEL' | translate }}</div>
           <div class="cart-total-amount">{{ total | number }} ₸</div>
         </div>
-        <a routerLink="/" class="btn-back">← Back</a>
-        <button class="btn-checkout" (click)="checkout()">
-          Place Order →
+        <a routerLink="/" class="btn-back">{{ 'CART.BACK_SHORT' | translate }}</a>
+        <button class="btn-checkout" (click)="checkout()" [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="spinner"></span> {{ 'CART.PLACING' | translate }}
+          } @else {
+            {{ 'CART.CHECKOUT' | translate }}
+          }
         </button>
       </div>
 
-    } @else {
+    } @else if (!orderSuccess) {
 
       <div class="cart-empty">
         <div class="empty-icon">🛒</div>
-        <p>Your cart is empty</p>
-        <a routerLink="/" class="btn-back">← Continue shopping</a>
+        <p>{{ 'CART.EMPTY' | translate }}</p>
+        <a routerLink="/" class="btn-back">{{ 'CART.TO_SHOP' | translate }}</a>
       </div>
 
     }

@@ -23,6 +23,22 @@
 
         <div class="detail-info">
           <h1>{{ product.name }}</h1>
+
+          <!-- Average rating display -->
+          @if (rating && rating.count > 0) {
+            <div class="detail-rating">
+              <span class="stars-display">
+                @for (s of avgStars(); track $index) {
+                  <span [class.filled]="s === '★'">{{ s }}</span>
+                }
+              </span>
+              <span class="rating-value">{{ rating.average }}</span>
+              <span class="rating-count">({{ rating.count }} review{{ rating.count !== 1 ? 's' : '' }})</span>
+            </div>
+          } @else {
+            <div class="detail-rating no-rating">No reviews yet</div>
+          }
+
           <div class="detail-divider"></div>
           <p class="detail-desc">{{ product.description }}</p>
           <div class="detail-price">{{ product.price }} ₸</div>
@@ -36,6 +52,107 @@
         </div>
 
       </div>
+
+      <!-- ── Reviews Section ─────────────────────────────────────── -->
+      <section class="reviews-section">
+        <h2 class="reviews-title">
+          Customer Reviews
+          @if (rating) {
+            <span class="reviews-count">{{ rating.count }}</span>
+          }
+        </h2>
+
+        <!-- Write / Edit review -->
+        @if (isLoggedIn) {
+          <div class="review-form-card">
+            @if (!myReview || editingReview) {
+              <h3>{{ myReview ? 'Edit your review' : 'Write a review' }}</h3>
+
+              <div class="star-picker">
+                @for (i of [1,2,3,4,5]; track i) {
+                  <button
+                    class="star-btn"
+                    [class.active]="i <= reviewRating"
+                    (click)="reviewRating = i">
+                    ★
+                  </button>
+                }
+                <span class="star-label">{{ reviewRating }}/5</span>
+              </div>
+
+              <textarea
+                [(ngModel)]="reviewText"
+                placeholder="Share your experience with this product..."
+                class="review-textarea"
+                rows="3">
+              </textarea>
+
+              @if (reviewError) {
+                <p class="review-error">{{ reviewError }}</p>
+              }
+
+              <div class="review-form-actions">
+                <button class="btn-submit-review" (click)="submitReview()" [disabled]="reviewLoading">
+                  {{ reviewLoading ? 'Saving...' : (myReview ? 'Update Review' : 'Submit Review') }}
+                </button>
+                @if (myReview) {
+                  <button class="btn-cancel-review" (click)="editingReview = false">Cancel</button>
+                }
+              </div>
+            } @else {
+              <!-- Show user's existing review -->
+              <div class="my-review-header">
+                <h3>Your review</h3>
+                <div class="my-review-actions">
+                  <button class="btn-edit-review" (click)="editingReview = true">Edit</button>
+                  <button class="btn-delete-review" (click)="deleteReview()">Delete</button>
+                </div>
+              </div>
+              <div class="my-review-stars">
+                @for (s of stars(myReview.rating); track $index) {
+                  <span [class.filled]="s === '★'">{{ s }}</span>
+                }
+              </div>
+              <p class="my-review-text">{{ myReview.text }}</p>
+            }
+          </div>
+        } @else {
+          <div class="review-login-prompt">
+            <a routerLink="/login">Sign in</a> to leave a review
+          </div>
+        }
+
+        <!-- All reviews list -->
+        <div class="reviews-list">
+          @if (reviews.length === 0) {
+            <div class="reviews-empty">
+              <span>💬</span>
+              <p>Be the first to review this product!</p>
+            </div>
+          }
+
+          @for (r of reviews; track r.id) {
+            <div class="review-item">
+              <div class="review-header">
+                <div class="review-avatar">{{ r.username.charAt(0).toUpperCase() }}</div>
+                <div>
+                  <div class="review-author">{{ r.username }}</div>
+                  <div class="review-date">{{ r.created_at | date:'MMM d, y' }}</div>
+                </div>
+                <div class="review-stars">
+                  @for (s of stars(r.rating); track $index) {
+                    <span [class.filled]="s === '★'">{{ s }}</span>
+                  }
+                </div>
+              </div>
+              @if (r.text) {
+                <p class="review-text">{{ r.text }}</p>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
     } @else {
       <p class="loading">Loading...</p>
     }
