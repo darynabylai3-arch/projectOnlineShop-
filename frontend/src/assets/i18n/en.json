@@ -1,0 +1,36 @@
+{
+  "HEADER": {
+    "SEARCH": "Search products...",
+    "LOGIN": "Sign In",
+    "REGISTER": "Sign Up",
+    "LOGOUT": "Logout",
+    "CART": "Cart",
+    "ADMIN": "Admin Panel",
+    "FAVORITES": "Favorites"
+  },
+  "PRODUCTS": {
+    "TITLE": "Catalog",
+    "ALL": "All",
+    "NO_PRODUCTS": "No products found",
+    "DETAILS": "View Details",
+    "IN_CART": "In Cart"
+  },
+  "CART": {
+    "TITLE": "Your Cart",
+    "EMPTY": "Your cart is empty",
+    "CONTINUE": "Continue shopping",
+    "TOTAL": "Total",
+    "ORDER": "Place Order",
+    "BACK": "Back"
+  },
+  "ADMIN": {
+    "TITLE": "Admin Panel",
+    "DESCRIPTION": "Manage products and categories"
+  },
+  "COMMON": {
+    "BACK": "Back",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "EDIT": "Edit"
+  }
+}

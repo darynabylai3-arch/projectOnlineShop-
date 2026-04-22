@@ -2,11 +2,13 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DecimalPipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Product, Category } from '../../services/product';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, SlicePipe],
+  imports: [CommonModule, FormsModule, DecimalPipe, SlicePipe, TranslateModule ],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })

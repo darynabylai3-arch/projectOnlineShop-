@@ -5,6 +5,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -16,7 +17,7 @@ interface Message {
 @Component({
   selector: 'app-chat-widget',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './chat-widget.html',
   styleUrls: ['./chat-widget.css']
 })

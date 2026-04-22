@@ -5,11 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Category } from '../../services/product';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, LanguageSwitcher, TranslateModule],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })

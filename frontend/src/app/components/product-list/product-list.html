@@ -53,6 +53,7 @@
         <div class="hero-tagline">Smart shopping experience</div>
       </div>
       <div class="hero-buttons">
+        <app-language-switcher></app-language-switcher>
         <button class="btn-hero-wish" (click)="openDrawer()" title="Favorites">
           ♥
           <span *ngIf="wishlistCount > 0" class="hero-wish-badge">{{ wishlistCount }}</span>

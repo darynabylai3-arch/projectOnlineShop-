@@ -6,9 +6,9 @@
     <div class="cart-hero-inner">
       <div class="cart-hero-left">
         <div class="cart-hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="cart-hero-tagline">Ваша корзина</div>
+        <div class="cart-hero-tagline">Your cart</div>
       </div>
-      <a routerLink="/" class="btn-back-hero">← Продолжить покупки</a>
+      <a routerLink="/" class="btn-back-hero">← Continue shopping</a>
     </div>
   </header>
 
@@ -18,15 +18,15 @@
 
       <div class="cart-summary">
         <div class="sum-card">
-          <div class="sum-label">Товаров</div>
+          <div class="sum-label">Items</div>
           <div class="sum-value">{{ totalItems }}</div>
         </div>
         <div class="sum-card">
-          <div class="sum-label">Позиций</div>
+          <div class="sum-label">Positions</div>
           <div class="sum-value">{{ items.length }}</div>
         </div>
         <div class="sum-card">
-          <div class="sum-label">Итого</div>
+          <div class="sum-label">Total</div>
           <div class="sum-value">{{ total | number }}₸</div>
         </div>
       </div>
@@ -38,7 +38,7 @@
           <div class="cart-item">
 
             <img [src]="item.image" *ngIf="item.image" class="cart-img" [alt]="item.name" />
-            <div class="cart-no-img" *ngIf="!item.image">Фото</div>
+            <div class="cart-no-img" *ngIf="!item.image">Photo</div>
 
             <div class="cart-info">
               <h3>{{ item.name }}</h3>
@@ -59,17 +59,17 @@
       </div>
 
       <div class="cart-divider">
-        <hr /><span>Итого к оплате</span><hr />
+        <hr /><span>Total to pay</span><hr />
       </div>
 
       <div class="cart-footer">
         <div class="cart-total">
-          <div class="cart-total-label">Сумма заказа</div>
+          <div class="cart-total-label">Order amount</div>
           <div class="cart-total-amount">{{ total | number }} ₸</div>
         </div>
-        <a routerLink="/" class="btn-back">← Назад</a>
+        <a routerLink="/" class="btn-back">← Back</a>
         <button class="btn-checkout" (click)="checkout()">
-          Оформить заказ →
+          Place Order →
         </button>
       </div>
 
@@ -77,8 +77,8 @@
 
       <div class="cart-empty">
         <div class="empty-icon">🛒</div>
-        <p>Корзина пуста</p>
-        <a routerLink="/" class="btn-back">← В магазин</a>
+        <p>Your cart is empty</p>
+        <a routerLink="/" class="btn-back">← Continue shopping</a>
       </div>
 
     }
