@@ -26,14 +26,13 @@ export class ForgotPassword {
       this.error = 'Please enter your email';
       return;
     }
-
     this.loading = true;
     this.error = '';
     this.success = '';
 
     this.auth.forgotPassword(this.email).subscribe({
       next: (response) => {
-        this.success = response.message || 'Reset link sent! Check your email (or Django console).';
+        this.success = response.message || 'Reset link sent!';
         this.loading = false;
         setTimeout(() => this.router.navigate(['/login']), 3000);
       },

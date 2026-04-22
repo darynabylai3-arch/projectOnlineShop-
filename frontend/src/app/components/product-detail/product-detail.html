@@ -6,9 +6,9 @@
     <div class="hero-inner">
       <div>
         <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="hero-tagline">Smart shopping experience</div>
+        <div class="hero-tagline">{{ 'HEADER.TAGLINE' | translate }}</div>
       </div>
-      <a routerLink="/" class="btn-back">← Back</a>
+      <a routerLink="/" class="btn-back">← {{ 'CATALOG.BACK' | translate }}</a>
     </div>
   </header>
 
@@ -18,13 +18,12 @@
 
         <img *ngIf="product.image; else noImg" [src]="product.image" class="detail-img" />
         <ng-template #noImg>
-          <div class="detail-no-image">No image</div>
+          <div class="detail-no-image">{{ 'CATALOG.NO_IMAGE' | translate }}</div>
         </ng-template>
 
         <div class="detail-info">
           <h1>{{ product.name }}</h1>
 
-          <!-- Average rating display -->
           @if (rating && rating.count > 0) {
             <div class="detail-rating">
               <span class="stars-display">
@@ -44,16 +43,15 @@
           <div class="detail-price">{{ product.price }} ₸</div>
           <div class="detail-stock">
             <span class="stock-dot"></span>
-            In stock: {{ product.stock }} pcs.
+            {{ 'CATALOG.IN_STOCK' | translate }}: {{ product.stock }} {{ 'CATALOG.PCS' | translate }}.
           </div>
           <div class="detail-actions">
-            <button class="btn-cart" (click)="addToCart()">🛒 Add to cart</button>
+            <button class="btn-cart" (click)="addToCart()">🛒 {{ 'CATALOG.ADD_TO_CART' | translate }}</button>
           </div>
         </div>
 
       </div>
 
-      <!-- ── Reviews Section ─────────────────────────────────────── -->
       <section class="reviews-section">
         <h2 class="reviews-title">
           Customer Reviews
@@ -62,7 +60,6 @@
           }
         </h2>
 
-        <!-- Write / Edit review -->
         @if (isLoggedIn) {
           <div class="review-form-card">
             @if (!myReview || editingReview) {
@@ -100,7 +97,6 @@
                 }
               </div>
             } @else {
-              <!-- Show user's existing review -->
               <div class="my-review-header">
                 <h3>Your review</h3>
                 <div class="my-review-actions">
@@ -122,7 +118,6 @@
           </div>
         }
 
-        <!-- All reviews list -->
         <div class="reviews-list">
           @if (reviews.length === 0) {
             <div class="reviews-empty">
@@ -154,7 +149,7 @@
       </section>
 
     } @else {
-      <p class="loading">Loading...</p>
+      <p class="loading">{{ 'CATALOG.LOADING' | translate }}</p>
     }
   </main>
 

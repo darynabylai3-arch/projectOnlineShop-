@@ -1,6 +1,5 @@
 <div class="profile-wrapper">
 
-    <!-- Header -->
     <header class="profile-hero">
       <div class="hero-blob1"></div>
       <div class="hero-blob2"></div>
@@ -15,7 +14,6 @@
   
     <main class="profile-main">
   
-      <!-- User card -->
       <div class="user-card">
         <div class="user-avatar">{{ userInitial }}</div>
         <div class="user-info">
@@ -33,8 +31,7 @@
           </div>
         </div>
       </div>
-  
-      <!-- Tabs -->
+
       <div class="tabs">
         <button
           class="tab-btn"
@@ -50,7 +47,6 @@
         </button>
       </div>
   
-      <!-- Orders Tab -->
       @if (activeTab === 'orders') {
         <div class="tab-content">
           @if (ordersLoading) {
@@ -102,7 +98,6 @@
         </div>
       }
   
-      <!-- Reviews Tab -->
       @if (activeTab === 'reviews') {
         <div class="tab-content">
           @if (reviewsLoading) {

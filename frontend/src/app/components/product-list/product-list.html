@@ -5,7 +5,7 @@
   <div class="wishlist-drawer" [class.open]="drawerOpen">
     <div class="drawer-header">
       <div class="drawer-title">
-        ♥ Favorites
+        ♥ {{ 'WISHLIST.TITLE' | translate }}
         <span class="drawer-title-count">{{ wishlistCount }}</span>
       </div>
       <button class="drawer-close" (click)="closeDrawer()">✕</button>
@@ -32,14 +32,14 @@
       <ng-template #drawerEmpty>
         <div class="drawer-empty">
           <div class="drawer-empty-icon">♡</div>
-          <p>Favorites is empty.<br>Add items by clicking ♡</p>
+          <p>{{ 'WISHLIST.EMPTY_TEXT' | translate }}<br>{{ 'WISHLIST.EMPTY_HINT' | translate }}</p>
         </div>
       </ng-template>
     </div>
 
     <div class="drawer-footer" *ngIf="wishlistProducts.length > 0">
       <button class="drawer-clear-btn" (click)="clearWishlist()">
-        Clear favorites
+        {{ 'WISHLIST.CLEAR' | translate }}
       </button>
     </div>
   </div>
@@ -50,23 +50,25 @@
     <div class="hero-inner">
       <div class="hero-brand">
         <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="hero-tagline">Smart shopping experience</div>
+        <div class="hero-tagline">{{ 'HEADER.TAGLINE' | translate }}</div>
       </div>
       <div class="hero-buttons">
+        <!-- Language switcher -->
         <app-language-switcher></app-language-switcher>
-        <button class="btn-hero-wish" (click)="openDrawer()" title="Favorites">
+
+        <button class="btn-hero-wish" (click)="openDrawer()" [title]="'HEADER.FAVORITES' | translate">
           ♥
           <span *ngIf="wishlistCount > 0" class="hero-wish-badge">{{ wishlistCount }}</span>
         </button>
 
         <ng-container *ngIf="!isLoggedIn">
-          <a routerLink="/login" class="btn-hero-outline">Login</a>
-          <a routerLink="/register" class="btn-hero-solid">Register</a>
+          <a routerLink="/login" class="btn-hero-outline">{{ 'HEADER.LOGIN' | translate }}</a>
+          <a routerLink="/register" class="btn-hero-solid">{{ 'HEADER.REGISTER' | translate }}</a>
         </ng-container>
         <ng-container *ngIf="isLoggedIn">
           <a routerLink="/profile" class="btn-hero-profile">👤 {{ username }}</a>
-          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">Admin</a>
-          <button class="btn-hero-outline" (click)="logout()">Logout</button>
+          <a *ngIf="isAdmin" routerLink="/admin" class="btn-hero-solid">{{ 'HEADER.ADMIN_PANEL' | translate }}</a>
+          <button class="btn-hero-outline" (click)="logout()">{{ 'HEADER.LOGOUT' | translate }}</button>
         </ng-container>
       </div>
     </div>
@@ -76,15 +78,15 @@
 
     <div class="stats-strip">
       <div class="stat-card">
-        <div class="stat-label">Products</div>
+        <div class="stat-label">{{ 'STATS.PRODUCTS' | translate }}</div>
         <div class="stat-value">{{ filteredCount }}</div>
       </div>
       <div class="stat-card clickable" (click)="openDrawer()">
-        <div class="stat-label">Favorites</div>
+        <div class="stat-label">{{ 'STATS.FAVORITES' | translate }}</div>
         <div class="stat-value">{{ wishlistCount }}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">In cart</div>
+        <div class="stat-label">{{ 'STATS.IN_CART' | translate }}</div>
         <div class="stat-value">{{ cartCount }}</div>
       </div>
     </div>
@@ -94,22 +96,24 @@
         <span class="search-icon">⌕</span>
         <input
           type="text"
-          placeholder="Search products..."
+          [placeholder]="'TOOLBAR.SEARCH_PLACEHOLDER' | translate"
           [(ngModel)]="searchQuery"
           (input)="applyFilters()"
         />
       </div>
       <select class="sort-select" [(ngModel)]="sortMode" (change)="applyFilters()">
-        <option value="default">Default</option>
-        <option value="price_asc">Price: low to high</option>
-        <option value="price_desc">Price: high to low</option>
-        <option value="name_asc">Name: A → Z</option>
-        <option value="newest">Newest</option>
+        <option value="default">{{ 'TOOLBAR.SORT_DEFAULT' | translate }}</option>
+        <option value="price_asc">{{ 'TOOLBAR.SORT_PRICE_ASC' | translate }}</option>
+        <option value="price_desc">{{ 'TOOLBAR.SORT_PRICE_DESC' | translate }}</option>
+        <option value="name_asc">{{ 'TOOLBAR.SORT_NAME_ASC' | translate }}</option>
+        <option value="newest">{{ 'TOOLBAR.SORT_NEWEST' | translate }}</option>
       </select>
     </div>
 
     <div class="categories">
-      <button [class.active]="selectedCategory === null" (click)="selectCategory(null)">All</button>
+      <button [class.active]="selectedCategory === null" (click)="selectCategory(null)">
+        {{ 'CATEGORIES.ALL' | translate }}
+      </button>
       <button
         *ngFor="let cat of categories"
         [class.active]="selectedCategory === cat.id"
@@ -119,10 +123,10 @@
     </div>
 
     <div class="section-head">
-      <div class="section-title">Catalog</div>
+      <div class="section-title">{{ 'CATALOG.TITLE' | translate }}</div>
       <div class="view-toggle">
-        <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'" title="Grid">▦</button>
-        <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'" title="List">☰</button>
+        <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'" [title]="'CATALOG.GRID' | translate">▦</button>
+        <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'" [title]="'CATALOG.LIST' | translate">☰</button>
       </div>
     </div>
 
@@ -144,11 +148,11 @@
         [class]="viewMode === 'grid' ? 'products-grid' : 'products-list'">
 
         <div class="product-card" *ngFor="let p of products">
-          <span *ngIf="p.is_new" class="card-badge badge-new">New</span>
-          <span *ngIf="p.is_hit && !p.is_new" class="card-badge badge-hit">Hit</span>
+          <span *ngIf="p.is_new" class="card-badge badge-new">{{ 'CATALOG.BADGE_NEW' | translate }}</span>
+          <span *ngIf="p.is_hit && !p.is_new" class="card-badge badge-hit">{{ 'CATALOG.BADGE_HIT' | translate }}</span>
           <span *ngIf="p.old_price && !p.is_new && !p.is_hit" class="card-badge badge-sale">-{{ getDiscount(p) }}%</span>
 
-          <button class="wish-btn" [class.active]="isWished(p.id)" (click)="toggleWish(p.id)" title="Add to favorites">
+          <button class="wish-btn" [class.active]="isWished(p.id)" (click)="toggleWish(p.id)" [title]="'CATALOG.ADD_TO_FAVORITES' | translate">
             {{ isWished(p.id) ? '♥' : '♡' }}
           </button>
 
@@ -165,7 +169,7 @@
                 <span *ngIf="p.old_price" class="price-old">{{ p.old_price }} ₸</span>
                 <span class="price">{{ p.price }} ₸</span>
               </div>
-              <a [routerLink]="['/product', p.id]" class="btn-buy">Details</a>
+              <a [routerLink]="['/product', p.id]" class="btn-buy">{{ 'CATALOG.DETAILS' | translate }}</a>
             </div>
           </div>
         </div>
@@ -174,7 +178,7 @@
       <ng-template #emptyBlock>
         <div class="empty">
           <div class="empty-icon">🔍</div>
-          <p>No products found</p>
+          <p>{{ 'CATALOG.NO_PRODUCTS' | translate }}</p>
         </div>
       </ng-template>
     </ng-container>

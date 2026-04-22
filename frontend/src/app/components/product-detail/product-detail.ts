@@ -20,7 +20,6 @@ export class ProductDetail implements OnInit {
   rating: ProductRating | null = null;
   myReview: Review | null = null;
 
-  // Review form
   reviewRating = 5;
   reviewText = '';
   reviewError = '';
@@ -128,6 +127,12 @@ export class ProductDetail implements OnInit {
     if (existing) existing.qty++;
     else cart.push({ ...this.product, qty: 1 });
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert('Товар добавлен в корзину!');
+    alert('Product added to your cart!');
+  }
+
+  getDiscount(product: any): number {
+    if (!product.old_price || !product.price) return 0;
+    if (product.old_price <= product.price) return 0;
+    return Math.round((1 - product.price / product.old_price) * 100);
   }
 }
