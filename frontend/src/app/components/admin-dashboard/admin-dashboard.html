@@ -2,12 +2,12 @@
 
   <div class="admin-header">
     <div>
-      <h1>Admin Panel</h1>
-      <p>Manage products and categories</p>
+      <h1>{{ 'ADMIN.TITLE' | translate }}</h1>
+      <p>{{ 'ADMIN.SUBTITLE' | translate }}</p>
     </div>
     <div class="header-actions">
-      <button class="btn-cat" (click)="showCatForm = !showCatForm">🏷️ Categories</button>
-      <button class="btn-add" (click)="openCreate()">+ Add Product</button>
+      <button class="btn-cat" (click)="showCatForm = !showCatForm">🏷️ {{ 'ADMIN.CATEGORIES' | translate }}</button>
+      <button class="btn-add" (click)="openCreate()">+ {{ 'ADMIN.ADD_PRODUCT' | translate }}</button>
     </div>
   </div>
 
@@ -15,22 +15,22 @@
     <div class="stat-card">
       <div class="stat-icon purple">📦</div>
       <div class="stat-value">{{ products.length }}</div>
-      <div class="stat-label">Products</div>
+      <div class="stat-label">{{ 'ADMIN.STAT_PRODUCTS' | translate }}</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon green">✅</div>
       <div class="stat-value">{{ inStockCount }}</div>
-      <div class="stat-label">In Stock</div>
+      <div class="stat-label">{{ 'ADMIN.STAT_IN_STOCK' | translate }}</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon coral">⚠️</div>
       <div class="stat-value">{{ lowStockCount }}</div>
-      <div class="stat-label">Low Stock</div>
+      <div class="stat-label">{{ 'ADMIN.STAT_LOW_STOCK' | translate }}</div>
     </div>
     <div class="stat-card" (click)="showCatForm = !showCatForm" style="cursor:pointer">
       <div class="stat-icon teal">🏷️</div>
       <div class="stat-value">{{ categories.length }}</div>
-      <div class="stat-label">Categories</div>
+      <div class="stat-label">{{ 'ADMIN.STAT_CATEGORIES' | translate }}</div>
     </div>
   </div>
 
@@ -38,17 +38,17 @@
 
     <div class="panel-card">
       <div class="card-header">
-        <h2>Products</h2>
-        <input class="search-input" placeholder="Search..." [(ngModel)]="searchQuery" />
+        <h2>{{ 'ADMIN.PRODUCTS_TABLE' | translate }}</h2>
+        <input class="search-input" [placeholder]="'ADMIN.SEARCH' | translate" [(ngModel)]="searchQuery" />
       </div>
       <table>
         <thead>
           <tr>
             <th></th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Category</th>
+            <th>{{ 'ADMIN.COL_NAME' | translate }}</th>
+            <th>{{ 'ADMIN.COL_PRICE' | translate }}</th>
+            <th>{{ 'ADMIN.COL_STOCK' | translate }}</th>
+            <th>{{ 'ADMIN.COL_CATEGORY' | translate }}</th>
             <th></th>
           </tr>
         </thead>
@@ -69,7 +69,7 @@
               <td>{{ p.price | number }} ₸</td>
               <td>
                 <span [class]="stockBadge(p.stock)">
-                  {{ p.stock > 0 ? p.stock : 'None' }}
+                  {{ p.stock > 0 ? p.stock : ('ADMIN.NONE' | translate) }}
                 </span>
               </td>
               <td>
@@ -77,15 +77,15 @@
               </td>
               <td>
                 <div class="action-cell">
-                  <button class="btn-icon" (click)="openEdit(p)" title="Edit">✏️</button>
-                  <button class="btn-icon delete" (click)="delete(p.id)" title="Delete">🗑️</button>
+                  <button class="btn-icon" (click)="openEdit(p)" [title]="'ADMIN.EDIT' | translate">✏️</button>
+                  <button class="btn-icon delete" (click)="delete(p.id)" [title]="'ADMIN.DELETE' | translate">🗑️</button>
                 </div>
               </td>
             </tr>
           }
           @if (filteredProducts.length === 0) {
             <tr><td colspan="6">
-              <div class="empty-state">No products found</div>
+              <div class="empty-state">{{ 'ADMIN.NO_PRODUCTS' | translate }}</div>
             </td></tr>
           }
         </tbody>
@@ -93,24 +93,24 @@
     </div>
 
     <div class="sidebar-card">
-      <h2>Categories</h2>
+      <h2>{{ 'ADMIN.CATEGORIES' | translate }}</h2>
       <div>
         @for (cat of categories; track cat.id) {
           <div class="cat-item">
             <div>
               <div class="cat-name">{{ cat.name }}</div>
-              <div class="cat-count">{{ countByCategory(cat.id) }} products</div>
+              <div class="cat-count">{{ countByCategory(cat.id) }} {{ 'ADMIN.PRODUCTS_COUNT' | translate }}</div>
             </div>
             <button class="btn-cat-delete" (click)="deleteCategory(cat.id)">×</button>
           </div>
         }
         @if (categories.length === 0) {
-          <div style="font-size:13px;color:#aaa;padding:8px 0">No categories</div>
+          <div style="font-size:13px;color:#aaa;padding:8px 0">{{ 'ADMIN.NO_CATEGORIES' | translate }}</div>
         }
       </div>
       <div class="cat-add-row">
         <input [(ngModel)]="newCatName"
-               placeholder="New category..."
+               [placeholder]="'ADMIN.NEW_CATEGORY' | translate"
                (keydown.enter)="addCategory()" />
         <button class="btn-add-cat" (click)="addCategory()">+</button>
       </div>
@@ -123,33 +123,33 @@
       <div class="modal-card" (click)="$event.stopPropagation()">
 
         <h2>
-          {{ editingId ? 'Edit Product' : 'New Product' }}
+          {{ editingId ? ('ADMIN.EDIT_PRODUCT' | translate) : ('ADMIN.NEW_PRODUCT' | translate) }}
           <button class="btn-close" (click)="showForm = false">×</button>
         </h2>
 
         <div class="form-group">
-          <label>Name</label>
-          <input [(ngModel)]="form.name" placeholder="Product name" />
+          <label>{{ 'ADMIN.FORM_NAME' | translate }}</label>
+          <input [(ngModel)]="form.name" [placeholder]="'ADMIN.FORM_NAME_PH' | translate" />
         </div>
 
         <div class="form-group">
-          <label>Description</label>
-          <textarea [(ngModel)]="form.description" placeholder="Short description"></textarea>
+          <label>{{ 'ADMIN.FORM_DESC' | translate }}</label>
+          <textarea [(ngModel)]="form.description" [placeholder]="'ADMIN.FORM_DESC_PH' | translate"></textarea>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Price (₸)</label>
+            <label>{{ 'ADMIN.FORM_PRICE' | translate }} (₸)</label>
             <input [(ngModel)]="form.price" type="number" min="0" />
           </div>
           <div class="form-group">
-            <label>Stock</label>
+            <label>{{ 'ADMIN.FORM_STOCK' | translate }}</label>
             <input [(ngModel)]="form.stock" type="number" min="0" />
           </div>
         </div>
 
         <div class="form-group">
-          <label>Category</label>
+          <label>{{ 'ADMIN.FORM_CATEGORY' | translate }}</label>
           <select [(ngModel)]="form.category">
             @for (cat of categories; track cat.id) {
               <option [value]="cat.id">{{ cat.name }}</option>
@@ -158,18 +158,16 @@
         </div>
 
         <div class="form-group">
-          <label>Photo</label>
-          <input type="file"
-                 accept="image/*"
-                 (change)="onFileChange($event)" />
+          <label>{{ 'ADMIN.FORM_PHOTO' | translate }}</label>
+          <input type="file" accept="image/*" (change)="onFileChange($event)" />
           <p *ngIf="imageFile" style="font-size:13px; margin-top:6px; color:#007a33;">
             ✅ {{ imageFile.name }}
           </p>
         </div>
 
         <div class="form-actions">
-          <button class="btn-save" (click)="save()">💾 Save</button>
-          <button class="btn-cancel" (click)="showForm = false">Cancel</button>
+          <button class="btn-save" (click)="save()">💾 {{ 'ADMIN.SAVE' | translate }}</button>
+          <button class="btn-cancel" (click)="showForm = false">{{ 'ADMIN.CANCEL' | translate }}</button>
         </div>
 
       </div>

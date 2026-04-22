@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { ProductService, Product, Category } from '../../services/product';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, SlicePipe, TranslateModule ],
+  imports: [CommonModule, FormsModule, DecimalPipe, SlicePipe, TranslateModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
@@ -28,43 +27,25 @@ export class AdminDashboard implements OnInit {
   imageFile: File | null = null;
 
   ngOnInit() {
-    console.log('AdminDashboard initialized');
     this.loadProducts();
     this.loadCategories();
   }
 
   loadProducts() {
-    console.log('Loading products...');
     this.productService.getAll().subscribe({
-      next: (p) => {
-        console.log('Products loaded:', p.length);
-        this.products = p;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error loading products:', err);
-        this.products = [];
-        this.cdr.detectChanges();
-      }
+      next: (p) => { this.products = p; this.cdr.detectChanges(); },
+      error: (err) => { console.error('Error loading products:', err); this.products = []; this.cdr.detectChanges(); }
     });
   }
 
   loadCategories() {
-    console.log('Loading categories...');
     this.productService.getAllCategories().subscribe({
       next: (c) => {
-        console.log('Categories loaded:', c.length);
         this.categories = c;
-        if (c.length > 0 && !this.form.category) {
-          this.form.category = c[0].id;
-        }
+        if (c.length > 0 && !this.form.category) this.form.category = c[0].id;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Error loading categories:', err);
-        this.categories = [];
-        this.cdr.detectChanges();
-      }
+      error: (err) => { console.error('Error loading categories:', err); this.categories = []; this.cdr.detectChanges(); }
     });
   }
 
@@ -78,13 +59,8 @@ export class AdminDashboard implements OnInit {
     );
   }
 
-  get inStockCount(): number {
-    return this.products.filter(p => p.stock > 0).length;
-  }
-
-  get lowStockCount(): number {
-    return this.products.filter(p => p.stock > 0 && p.stock <= 5).length;
-  }
+  get inStockCount(): number { return this.products.filter(p => p.stock > 0).length; }
+  get lowStockCount(): number { return this.products.filter(p => p.stock > 0 && p.stock <= 5).length; }
 
   getCatName(id: number): string {
     const cat = this.categories.find(c => c.id === id);
@@ -103,41 +79,25 @@ export class AdminDashboard implements OnInit {
 
   openCreate() {
     this.editingId = null;
-    this.form = { 
-      name: '', 
-      description: '', 
-      price: 0, 
-      stock: 0, 
-      category: this.categories[0]?.id ?? 0 
-    };
+    this.form = { name: '', description: '', price: 0, stock: 0, category: this.categories[0]?.id ?? 0 };
     this.imageFile = null;
     this.showForm = true;
   }
 
   openEdit(p: Product) {
     this.editingId = p.id;
-    this.form = { 
-      name: p.name, 
-      description: p.description, 
-      price: p.price, 
-      stock: p.stock, 
-      category: p.category 
-    };
+    this.form = { name: p.name, description: p.description, price: p.price, stock: p.stock, category: p.category };
     this.imageFile = null;
     this.showForm = true;
   }
 
   closeOnBackdrop(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
-      this.showForm = false;
-    }
+    if ((event.target as HTMLElement).classList.contains('modal-overlay')) this.showForm = false;
   }
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.imageFile = input.files[0];
-    }
+    if (input.files && input.files.length > 0) this.imageFile = input.files[0];
   }
 
   save() {
@@ -147,66 +107,39 @@ export class AdminDashboard implements OnInit {
     fd.append('price', String(this.form.price));
     fd.append('stock', String(this.form.stock));
     fd.append('category', String(this.form.category));
-    if (this.imageFile) {
-      fd.append('image', this.imageFile, this.imageFile.name);
-    }
+    if (this.imageFile) fd.append('image', this.imageFile, this.imageFile.name);
 
     const req = this.editingId
       ? this.productService.update(this.editingId, fd)
       : this.productService.create(fd);
 
     req.subscribe({
-      next: () => {
-        console.log('Product saved successfully');
-        this.showForm = false;
-        this.loadProducts();
-        this.loadCategories();
-      },
-      error: (err) => {
-        console.error('Error saving product:', err);
-      }
+      next: () => { this.showForm = false; this.loadProducts(); this.loadCategories(); },
+      error: (err) => console.error('Error saving product:', err)
     });
   }
 
   delete(id: number) {
     if (!confirm('Delete product?')) return;
     this.productService.delete(id).subscribe({
-      next: () => {
-        console.log('Product deleted successfully');
-        this.loadProducts();
-      },
-      error: (err) => {
-        console.error('Error deleting product:', err);
-      }
+      next: () => this.loadProducts(),
+      error: (err) => console.error('Error deleting product:', err)
     });
   }
 
   addCategory() {
     if (!this.newCatName.trim()) return;
     this.productService.createCategory(this.newCatName.trim()).subscribe({
-      next: () => {
-        console.log('Category added successfully');
-        this.newCatName = '';
-        this.loadCategories();
-        this.loadProducts();
-      },
-      error: (err) => {
-        console.error('Error adding category:', err);
-      }
+      next: () => { this.newCatName = ''; this.loadCategories(); this.loadProducts(); },
+      error: (err) => console.error('Error adding category:', err)
     });
   }
 
   deleteCategory(id: number) {
     if (!confirm('Delete category?')) return;
     this.productService.deleteCategory(id).subscribe({
-      next: () => {
-        console.log('Category deleted successfully');
-        this.loadCategories();
-        this.loadProducts();
-      },
-      error: (err) => {
-        console.error('Error deleting category:', err);
-      }
+      next: () => { this.loadCategories(); this.loadProducts(); },
+      error: (err) => console.error('Error deleting category:', err)
     });
   }
 }

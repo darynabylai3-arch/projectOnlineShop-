@@ -25,7 +25,7 @@ export class ResetPassword implements OnInit {
   private route = inject(ActivatedRoute);
 
   ngOnInit() {
-    this.token = this.route.snapshot.queryParams['token'];
+    this.token = this.route.snapshot.queryParamMap.get('token') || '';
     if (!this.token) {
       this.error = 'Invalid reset link';
     }
@@ -36,12 +36,10 @@ export class ResetPassword implements OnInit {
       this.error = 'Please fill in all fields';
       return;
     }
-
     if (this.newPassword !== this.confirmPassword) {
       this.error = 'Passwords do not match';
       return;
     }
-
     if (this.newPassword.length < 6) {
       this.error = 'Password must be at least 6 characters';
       return;

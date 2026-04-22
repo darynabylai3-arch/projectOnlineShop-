@@ -5,13 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Category } from '../../services/product';
-import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LanguageSwitcher, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, LanguageSwitcher],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
@@ -23,7 +23,7 @@ export class ProductList implements OnInit {
 
   allProducts: any[] = [];
   products: any[] = [];
-  categories: Category[] = []; 
+  categories: Category[] = [];
   selectedCategory: number | null = null;
   searchQuery = '';
   sortMode = 'default';
@@ -37,7 +37,7 @@ export class ProductList implements OnInit {
 
   getCategoryName(categoryId: number): string {
     const category = this.categories.find(c => c.id === categoryId);
-    return category?.name || 'Без категории';
+    return category?.name || '';
   }
 
   get wishlistProducts(): any[] {

@@ -6,9 +6,9 @@
     <div class="hero-inner">
       <div>
         <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="hero-tagline">Smart shopping experience</div>
+        <div class="hero-tagline">{{ 'HEADER.TAGLINE' | translate }}</div>
       </div>
-      <a routerLink="/" class="btn-back">← Back</a>
+      <a routerLink="/" class="btn-back">← {{ 'CATALOG.BACK' | translate }}</a>
     </div>
   </header>
 
@@ -18,7 +18,7 @@
 
         <img *ngIf="product.image; else noImg" [src]="product.image" class="detail-img" />
         <ng-template #noImg>
-          <div class="detail-no-image">No image</div>
+          <div class="detail-no-image">{{ 'CATALOG.NO_IMAGE' | translate }}</div>
         </ng-template>
 
         <div class="detail-info">
@@ -28,16 +28,16 @@
           <div class="detail-price">{{ product.price }} ₸</div>
           <div class="detail-stock">
             <span class="stock-dot"></span>
-            In stock: {{ product.stock }} pcs.
+            {{ 'CATALOG.IN_STOCK' | translate }}: {{ product.stock }} {{ 'CATALOG.PCS' | translate }}.
           </div>
           <div class="detail-actions">
-            <button class="btn-cart" (click)="addToCart()">🛒 Add to cart</button>
+            <button class="btn-cart" (click)="addToCart()">🛒 {{ 'CATALOG.ADD_TO_CART' | translate }}</button>
           </div>
         </div>
 
       </div>
     } @else {
-      <p class="loading">Loading...</p>
+      <p class="loading">{{ 'CATALOG.LOADING' | translate }}</p>
     }
   </main>
 

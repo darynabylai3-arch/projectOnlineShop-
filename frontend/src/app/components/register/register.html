@@ -10,30 +10,30 @@
 
       <div class="sidebar-mid">
         <div class="sidebar-quote">
-          <strong>Join the community.</strong>
-          Create an account and start your shopping journey with us.
+          <strong>{{ 'AUTH.SIDEBAR_QUOTE_REG' | translate }}</strong>
+          {{ 'AUTH.SIDEBAR_TEXT_REG' | translate }}
         </div>
       </div>
 
       <div class="sidebar-steps">
         <div class="step">
           <div class="step-dot"></div>
-          <div class="step-label">Sign in to your account</div>
+          <div class="step-label">{{ 'AUTH.STEP_SIGN_IN' | translate }}</div>
         </div>
         <div class="step active">
           <div class="step-dot"></div>
-          <div class="step-label">Create new account</div>
+          <div class="step-label">{{ 'AUTH.STEP_CREATE' | translate }}</div>
         </div>
         <div class="step">
           <div class="step-dot"></div>
-          <div class="step-label">Reset password</div>
+          <div class="step-label">{{ 'AUTH.STEP_RESET' | translate }}</div>
         </div>
       </div>
     </aside>
 
     <div class="auth-body">
       <div class="auth-top-row">
-        <p class="auth-eyebrow">Get started</p>
+        <p class="auth-eyebrow">{{ 'AUTH.REGISTER_EYEBROW' | translate }}</p>
         <div class="step-indicator">
           <span class="si"></span>
           <span class="si active"></span>
@@ -41,25 +41,25 @@
         </div>
       </div>
 
-      <h2 class="auth-title">Create Account</h2>
-      <p class="auth-subtitle">Join ShopMind for free</p>
+      <h2 class="auth-title">{{ 'AUTH.REGISTER_TITLE' | translate }}</h2>
+      <p class="auth-subtitle">{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
 
       <div class="form-group">
-        <label>Username</label>
-        <input [(ngModel)]="username" type="text" placeholder="Choose a username" />
+        <label>{{ 'AUTH.USERNAME' | translate }}</label>
+        <input [(ngModel)]="username" type="text" [placeholder]="'AUTH.USERNAME_PLACEHOLDER_CHOOSE' | translate" />
       </div>
 
       <div class="form-group">
-        <label>Email</label>
-        <input [(ngModel)]="email" type="email" placeholder="Enter your email" />
+        <label>{{ 'AUTH.EMAIL' | translate }}</label>
+        <input [(ngModel)]="email" type="email" [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate" />
       </div>
 
       <div class="form-group">
         <div class="form-label-row">
-          <label>Password</label>
-          <a class="forgot-link" href="javascript:void(0)">?</a>
+          <label>{{ 'AUTH.PASSWORD' | translate }}</label>
+          <a class="forgot-link" href="javascript:void(0)"></a>
         </div>
-        <input [(ngModel)]="password" type="password" placeholder="Create a password" />
+        <input [(ngModel)]="password" type="password" [placeholder]="'AUTH.PASSWORD_PLACEHOLDER_CREATE' | translate" />
       </div>
 
       @if (error) {
@@ -67,14 +67,14 @@
       }
 
       <button class="btn-submit" (click)="submit()">
-        Sign Up
+        {{ 'AUTH.SIGN_UP' | translate }}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path d="M5 12h14M12 5l7 7-7 7"/>
         </svg>
       </button>
 
       <div class="auth-divider">
-        <hr /><span>OR</span><hr />
+        <hr /><span>{{ 'AUTH.OR' | translate }}</span><hr />
       </div>
 
       <div class="social-row">
@@ -83,7 +83,7 @@
       </div>
 
       <p class="auth-link">
-        Already have an account? <a routerLink="/login">Sign In</a>
+        {{ 'AUTH.HAVE_ACCOUNT' | translate }} <a routerLink="/login">{{ 'AUTH.SIGN_IN' | translate }}</a>
       </p>
     </div>
   </div>

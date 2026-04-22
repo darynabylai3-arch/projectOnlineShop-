@@ -46,7 +46,7 @@ export class Cart implements OnInit {
   }
 
   checkout() {
-    alert('Заказ оформлен! Спасибо 🎉');
+    alert('Order placed! Thank you 🎉');
     localStorage.removeItem('cart');
     this.items = [];
   }
