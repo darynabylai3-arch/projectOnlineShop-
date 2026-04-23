@@ -14,9 +14,10 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG', default=True)
 
 GROQ_API_KEY = env('GROQ_API_KEY', default='')
+GROQ_API_URL = env('GROQ_API_URL', default='https://api.groq.com/openai/v1/chat/completions')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
