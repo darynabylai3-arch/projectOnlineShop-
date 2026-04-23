@@ -13,9 +13,22 @@
 .hero {
   background: linear-gradient(150deg, #6c63ff 0%, #a89fff 100%);
   color: white;
-  padding: 36px 32px 32px;
+  padding: 36px 32px 64px;
   position: relative;
   overflow: hidden;
+  margin-bottom: -32px;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: #f4f4fb;
+  clip-path: ellipse(55% 100% at 50% 100%);
+  pointer-events: none;
 }
 
 .hero-blob1 {
@@ -126,9 +139,11 @@
 }
 
 .products-section {
-  padding: 32px 24px;
+  padding: 48px 24px 32px;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .stats-strip {
@@ -570,8 +585,21 @@
 }
 
 @media (max-width: 600px) {
-  .hero { padding: 24px 16px; }
-  .products-section { padding: 20px 12px; }
+  .hero {
+  background: linear-gradient(150deg, #6c63ff 0%, #a89fff 100%);
+  color: white;
+  padding: 36px 32px 64px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: -32px;
+}
+  .products-section {
+  padding: 48px 24px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
   .stats-strip { grid-template-columns: repeat(3, 1fr); }
   .toolbar { flex-direction: column; }
   .search-wrap, .sort-select { width: 100%; }
@@ -845,25 +873,4 @@
 
 @media (max-width: 600px) {
   .wishlist-drawer { width: 100vw; }
-}
-
-.btn-hero-profile {
-  padding: 9px 20px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-hero-profile:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.8);
 }
