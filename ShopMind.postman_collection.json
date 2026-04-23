@@ -1,0 +1,506 @@
+{
+  "info": {
+    "name": "ShopMind API",
+    "_postman_id": "shopmind-api-collection",
+    "description": "Full API collection for ShopMind e-commerce platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" },
+    { "key": "access_token", "value": "" },
+    { "key": "refresh_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/register/", "host": ["{{base_url}}"], "path": ["auth", "register", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"securepass123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"message\": \"User created successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login (get tokens)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('access_token', json.access);",
+                  "pm.collectionVariables.set('refresh_token', json.refresh);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/token/", "host": ["{{base_url}}"], "path": ["auth", "token", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"securepass123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"access\": \"eyJ...\",\n  \"refresh\": \"eyJ...\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/token/refresh/", "host": ["{{base_url}}"], "path": ["auth", "token", "refresh", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"access\": \"eyJ...\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/forgot-password/", "host": ["{{base_url}}"], "path": ["auth", "forgot-password", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Reset link sent to your email\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/auth/reset-password/", "host": ["{{base_url}}"], "path": ["auth", "reset-password", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<token-from-email>\",\n  \"new_password\": \"newpass123\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Password reset successfully\"\n}"
+            },
+            {
+              "name": "Invalid token",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error\": \"Invalid or expired token\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List all products",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/products/", "host": ["{{base_url}}"], "path": ["products", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Wireless Headphones\",\n    \"description\": \"Premium sound quality\",\n    \"price\": \"15990.00\",\n    \"image\": \"http://localhost:8000/media/products/headphones.jpg\",\n    \"category\": 2,\n    \"stock\": 42,\n    \"created_at\": \"2025-01-15T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get product by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/products/1/", "host": ["{{base_url}}"], "path": ["products", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Wireless Headphones\",\n  \"description\": \"Premium sound quality\",\n  \"price\": \"15990.00\",\n  \"image\": \"http://localhost:8000/media/products/headphones.jpg\",\n  \"category\": 2,\n  \"stock\": 42,\n  \"created_at\": \"2025-01-15T10:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/products/", "host": ["{{base_url}}"], "path": ["products", ""] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "New Product", "type": "text" },
+                { "key": "description", "value": "Product description", "type": "text" },
+                { "key": "price", "value": "9990", "type": "text" },
+                { "key": "stock", "value": "100", "type": "text" },
+                { "key": "category", "value": "1", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 5,\n  \"name\": \"New Product\",\n  \"price\": \"9990.00\",\n  \"stock\": 100,\n  \"category\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update product (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/products/1/", "host": ["{{base_url}}"], "path": ["products", "1", ""] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "price", "value": "12990", "type": "text" },
+                { "key": "stock", "value": "50", "type": "text" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Updated",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Wireless Headphones\",\n  \"price\": \"12990.00\",\n  \"stock\": 50\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/products/1/", "host": ["{{base_url}}"], "path": ["products", "1", ""] }
+          },
+          "response": [
+            {
+              "name": "Deleted",
+              "status": "No Content",
+              "code": 204,
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/categories/", "host": ["{{base_url}}"], "path": ["categories", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  { \"id\": 1, \"name\": \"Electronics\" },\n  { \"id\": 2, \"name\": \"Accessories\" }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/categories/", "host": ["{{base_url}}"], "path": ["categories", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Gaming\"\n}" }
+          },
+          "response": [
+            {
+              "name": "Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 3,\n  \"name\": \"Gaming\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/categories/1/", "host": ["{{base_url}}"], "path": ["categories", "1", ""] }
+          },
+          "response": [
+            { "name": "Deleted", "status": "No Content", "code": 204, "body": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "My orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/orders/", "host": ["{{base_url}}"], "path": ["orders", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"user\": 3,\n    \"status\": \"pending\",\n    \"created_at\": \"2025-04-10T12:00:00Z\",\n    \"total\": \"31980.00\",\n    \"items\": [\n      { \"id\": 1, \"product\": 1, \"quantity\": 2, \"price\": \"15990.00\" }\n    ]\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Create order (checkout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/orders/", "host": ["{{base_url}}"], "path": ["orders", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"product_id\": 1, \"quantity\": 2 },\n    { \"product_id\": 3, \"quantity\": 1 }\n  ]\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 2,\n  \"user\": 3,\n  \"status\": \"pending\",\n  \"created_at\": \"2025-04-23T09:00:00Z\",\n  \"total\": \"41970.00\",\n  \"items\": [\n    { \"id\": 3, \"product\": 1, \"quantity\": 2, \"price\": \"15990.00\" },\n    { \"id\": 4, \"product\": 3, \"quantity\": 1, \"price\": \"9990.00\" }\n  ]\n}"
+            },
+            {
+              "name": "Not enough stock",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"error\": \"Not enough stock for \\\"Wireless Headphones\\\". Available: 1\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Get reviews for product",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reviews/?product=1", "host": ["{{base_url}}"], "path": ["reviews", ""], "query": [{ "key": "product", "value": "1" }] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"product\": 1,\n    \"user\": 3,\n    \"username\": \"testuser\",\n    \"rating\": 5,\n    \"text\": \"Great product!\",\n    \"created_at\": \"2025-04-20T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get product rating",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reviews/product/1/rating/", "host": ["{{base_url}}"], "path": ["reviews", "product", "1", "rating", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"product_id\": 1,\n  \"average\": 4.5,\n  \"count\": 12\n}"
+            }
+          ]
+        },
+        {
+          "name": "My review for product",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/reviews/product/1/my/", "host": ["{{base_url}}"], "path": ["reviews", "product", "1", "my", ""] }
+          },
+          "response": [
+            {
+              "name": "Has review",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 1,\n  \"product\": 1,\n  \"rating\": 5,\n  \"text\": \"Great product!\",\n  \"created_at\": \"2025-04-20T10:00:00Z\"\n}"
+            },
+            {
+              "name": "No review yet",
+              "status": "OK",
+              "code": 200,
+              "body": "null"
+            }
+          ]
+        },
+        {
+          "name": "Create review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/reviews/", "host": ["{{base_url}}"], "path": ["reviews", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": 1,\n  \"rating\": 5,\n  \"text\": \"Excellent quality, fast delivery!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"id\": 7,\n  \"product\": 1,\n  \"user\": 3,\n  \"username\": \"testuser\",\n  \"rating\": 5,\n  \"text\": \"Excellent quality, fast delivery!\",\n  \"created_at\": \"2025-04-23T10:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update review",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/reviews/7/", "host": ["{{base_url}}"], "path": ["reviews", "7", ""] },
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 4,\n  \"text\": \"Good, but could be better\"\n}" }
+          },
+          "response": [
+            {
+              "name": "Updated",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"id\": 7,\n  \"rating\": 4,\n  \"text\": \"Good, but could be better\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete review",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/reviews/7/", "host": ["{{base_url}}"], "path": ["reviews", "7", ""] }
+          },
+          "response": [{ "name": "Deleted", "status": "No Content", "code": 204, "body": "" }]
+        },
+        {
+          "name": "My all reviews",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/reviews/mine/", "host": ["{{base_url}}"], "path": ["reviews", "mine", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"id\": 1,\n    \"product_id\": 1,\n    \"product_name\": \"Wireless Headphones\",\n    \"rating\": 5,\n    \"text\": \"Great!\",\n    \"created_at\": \"2025-04-20T10:00:00Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chat AI",
+      "item": [
+        {
+          "name": "Send message to AI",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/chat/ai/", "host": ["{{base_url}}"], "path": ["chat", "ai", ""] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What headphones do you recommend?\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"reply\": \"I'd recommend checking our Wireless Headphones in the Electronics category! They offer great sound quality at a competitive price.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Chat history (authenticated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": { "raw": "{{base_url}}/chat/history/", "host": ["{{base_url}}"], "path": ["chat", "history", ""] }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "[\n  {\n    \"user_message\": \"What headphones do you recommend?\",\n    \"ai_reply\": \"I'd recommend checking our Wireless Headphones!\",\n    \"created_at\": \"2025-04-23T09:00:00Z\"\n  }\n]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
