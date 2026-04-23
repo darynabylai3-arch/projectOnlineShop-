@@ -1,12 +1,18 @@
 import requests
+import environ
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import ChatMessage
 
-GROQ_API_KEY = "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"
-GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+env = environ.Env()
+environ.Env.read_env()
+
+GROQ_API_KEY = env('GROQ_API_KEY')
+
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 SYSTEM_PROMPT = """Ты — дружелюбный ИИ-консультант интернет-магазина ShopMind.
 Твои задачи:
@@ -27,13 +33,17 @@ def ai_chat(request):
     if not user_message:
         return Response({"error": "Пустое сообщение"}, status=400)
 
+    groq_api_key = settings.GROQ_API_KEY
+    if not groq_api_key:
+        return Response({"error": "GROQ_API_KEY not configured"}, status=500)
+
     print(f">>> Получено сообщение: {user_message}")
 
     try:
         response = requests.post(
             GROQ_URL,
             headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {groq_api_key}",
                 "Content-Type": "application/json",
             },
             json={
@@ -49,7 +59,6 @@ def ai_chat(request):
         )
 
         print(f">>> Groq статус: {response.status_code}")
-        print(f">>> Groq ответ: {response.text}")
 
         if response.status_code != 200:
             return Response(

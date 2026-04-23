@@ -1,7 +1,20 @@
 from django.db import models
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class ProductManager(models.Manager):
+    def in_stock(self):
+        return self.filter(stock__gt=0)
+
+    def available(self):
+        return self.filter(stock__gt=0)
+
 
 class Product(models.Model):
     name        = models.CharField(max_length=200)
@@ -12,12 +25,7 @@ class Product(models.Model):
     stock       = models.PositiveIntegerField(default=0)
     created_at  = models.DateTimeField(auto_now_add=True)
 
+    objects = ProductManager()
+
     def __str__(self):
         return self.name
-    
-class ProductManager(models.Manager):
-    def in_stock(self):
-        return self.filter(stock__gt=0)
-    
-    def available(self):
-        return self.filter(stock__gt=0, is_active=True)

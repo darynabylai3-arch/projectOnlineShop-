@@ -5,12 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { ProductService, Product } from '../../services/product';
 import { ReviewService, Review, ProductRating } from '../../services/review';
 import { AuthService } from '../../services/auth';
+import { ToastService } from '../../services/toast';
+import { ToastComponent } from '../toast/toast';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, ToastComponent],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })
@@ -19,6 +21,8 @@ export class ProductDetail implements OnInit {
   reviews: Review[] = [];
   rating: ProductRating | null = null;
   myReview: Review | null = null;
+
+  isLoading = true;
 
   reviewRating = 5;
   reviewText = '';
@@ -30,16 +34,28 @@ export class ProductDetail implements OnInit {
   private productService = inject(ProductService);
   private reviewService = inject(ReviewService);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
 
   get isLoggedIn() { return this.auth.isLoggedIn(); }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getById(id).subscribe(p => {
-      this.product = p;
-      this.cdr.detectChanges();
+    this.isLoading = true;
+
+    this.productService.getById(id).subscribe({
+      next: p => {
+        this.product = p;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error('Failed to load product');
+        this.cdr.detectChanges();
+      }
     });
+
     this.loadReviews(id);
     if (this.isLoggedIn) {
       this.loadMyReview(id);
@@ -96,12 +112,14 @@ export class ProductDetail implements OnInit {
       next: () => {
         this.reviewLoading = false;
         this.editingReview = false;
+        this.toast.success(this.myReview ? 'Review updated!' : 'Review submitted!');
         this.loadReviews(this.product!.id);
         this.loadMyReview(this.product!.id);
       },
       error: (err) => {
         this.reviewLoading = false;
         this.reviewError = err.error?.detail || err.error?.non_field_errors?.[0] || 'Error submitting review';
+        this.toast.error(this.reviewError);
         this.cdr.detectChanges();
       }
     });
@@ -114,6 +132,7 @@ export class ProductDetail implements OnInit {
         this.myReview = null;
         this.reviewRating = 5;
         this.reviewText = '';
+        this.toast.success('Review deleted');
         this.loadReviews(this.product!.id);
         this.cdr.detectChanges();
       }
@@ -124,15 +143,13 @@ export class ProductDetail implements OnInit {
     if (!this.product) return;
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const existing = cart.find((i: any) => i.id === this.product!.id);
-    if (existing) existing.qty++;
-    else cart.push({ ...this.product, qty: 1 });
+    if (existing) {
+      existing.qty++;
+      this.toast.info(`${this.product.name} — quantity updated (${existing.qty})`);
+    } else {
+      cart.push({ ...this.product, qty: 1 });
+      this.toast.success(`${this.product.name} added to cart!`);
+    }
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert('Product added to your cart!');
-  }
-
-  getDiscount(product: any): number {
-    if (!product.old_price || !product.price) return 0;
-    if (product.old_price <= product.price) return 0;
-    return Math.round((1 - product.price / product.old_price) * 100);
   }
 }
