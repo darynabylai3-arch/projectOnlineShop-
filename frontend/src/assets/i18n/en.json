@@ -148,5 +148,26 @@
     "RESETTING": "Saving...",
     "SUBMIT_BTN": "Save Password",
     "BACK_TO_LOGIN": "Back to Sign In"
+  },
+  "PROFILE": {
+    "BACK_TO_SHOP": "← Shop",
+    "LOGOUT": "Logout",
+    "MEMBER": "ShopMind Member",
+    "ORDERS_COUNT": "Orders",
+    "REVIEWS_COUNT": "Reviews",
+    "TAB_ORDERS": "📦 Order History",
+    "TAB_REVIEWS": "⭐ My Reviews",
+    "ORDER_ID": "Order #",
+    "ORDER_TOTAL": "Total",
+    "STATUS_PENDING": "Pending",
+    "STATUS_PAID": "Paid",
+    "STATUS_SHIPPED": "Shipped",
+    "NO_ORDERS": "No orders yet",
+    "START_SHOPPING": "Start shopping →",
+    "NO_REVIEWS": "You haven't reviewed any products yet",
+    "BROWSE_PRODUCTS": "Browse products →",
+    "PRODUCT": "Product #",
+    "VIEW_PRODUCT": "View product →",
+    "LOAD_ERROR": "Failed to load orders."
   }
 }

@@ -148,5 +148,26 @@
     "RESETTING": "Сохранение...",
     "SUBMIT_BTN": "Сохранить пароль",
     "BACK_TO_LOGIN": "Вернуться к входу"
+  },
+  "PROFILE": {
+    "BACK_TO_SHOP": "← Магазин",
+    "LOGOUT": "Выйти",
+    "MEMBER": "Участник ShopMind",
+    "ORDERS_COUNT": "Заказы",
+    "REVIEWS_COUNT": "Отзывы",
+    "TAB_ORDERS": "📦 История заказов",
+    "TAB_REVIEWS": "⭐ Мои отзывы",
+    "ORDER_ID": "Заказ №",
+    "ORDER_TOTAL": "Итого",
+    "STATUS_PENDING": "В обработке",
+    "STATUS_PAID": "Оплачен",
+    "STATUS_SHIPPED": "Отправлен",
+    "NO_ORDERS": "Заказов пока нет",
+    "START_SHOPPING": "Начать покупки →",
+    "NO_REVIEWS": "Вы ещё не оставили отзывов",
+    "BROWSE_PRODUCTS": "Просмотр товаров →",
+    "PRODUCT": "Продукт №",
+    "VIEW_PRODUCT": "Смотреть товар →",
+    "LOAD_ERROR": "Не удалось загрузить заказы."
   }
 }

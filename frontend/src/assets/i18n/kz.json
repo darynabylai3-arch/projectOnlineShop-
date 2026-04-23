@@ -148,5 +148,26 @@
     "RESETTING": "Сақталуда...",
     "SUBMIT_BTN": "Құпия сөзді сақтау",
     "BACK_TO_LOGIN": "Кіруге оралу"
+  },
+  "PROFILE": {
+    "BACK_TO_SHOP": "← Дүкен",
+    "LOGOUT": "Шығу",
+    "MEMBER": "ShopMind мүшесі",
+    "ORDERS_COUNT": "Тапсырыстар",
+    "REVIEWS_COUNT": "Пікірлер",
+    "TAB_ORDERS": "📦 Тапсырыс тарихы",
+    "TAB_REVIEWS": "⭐ Менің пікірлерім",
+    "ORDER_ID": "Тапсырыс №",
+    "ORDER_TOTAL": "Жиыны",
+    "STATUS_PENDING": "Өңделуде",
+    "STATUS_PAID": "Төленді",
+    "STATUS_SHIPPED": "Жіберілді",
+    "NO_ORDERS": "Тапсырыстар жоқ",
+    "START_SHOPPING": "Сауданы бастау →",
+    "NO_REVIEWS": "Сіз әлі пікір қалдырмадыңыз",
+    "BROWSE_PRODUCTS": "Тауарларды шолу →",
+    "PRODUCT": "Тауар №",
+    "VIEW_PRODUCT": "Тауарды көру →",
+    "LOAD_ERROR": "Тапсырыстарды жүктеу мүмкін болмады."
   }
 }

@@ -1,142 +1,142 @@
 <div class="profile-wrapper">
 
-    <header class="profile-hero">
-      <div class="hero-blob1"></div>
-      <div class="hero-blob2"></div>
-      <div class="hero-inner">
-        <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
-        <div class="hero-nav">
-          <a routerLink="/" class="btn-nav">← Shop</a>
-          <button class="btn-nav danger" (click)="logout()">Logout</button>
-        </div>
+  <header class="profile-hero">
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-inner">
+      <div class="hero-logo">🛍️ Shop<span>Mind</span></div>
+      <div class="hero-nav">
+        <a routerLink="/" class="btn-nav">{{ 'PROFILE.BACK_TO_SHOP' | translate }}</a>
+        <button class="btn-nav danger" (click)="logout()">{{ 'PROFILE.LOGOUT' | translate }}</button>
       </div>
-    </header>
-  
-    <main class="profile-main">
-  
-      <div class="user-card">
-        <div class="user-avatar">{{ userInitial }}</div>
-        <div class="user-info">
-          <div class="user-name">{{ username }}</div>
-          <div class="user-meta">ShopMind Member</div>
-        </div>
-        <div class="user-stats">
-          <div class="ustat">
-            <div class="ustat-value">{{ orders.length }}</div>
-            <div class="ustat-label">Orders</div>
-          </div>
-          <div class="ustat">
-            <div class="ustat-value">{{ myReviews.length }}</div>
-            <div class="ustat-label">Reviews</div>
-          </div>
-        </div>
-      </div>
+    </div>
+  </header>
 
-      <div class="tabs">
-        <button
-          class="tab-btn"
-          [class.active]="activeTab === 'orders'"
-          (click)="activeTab = 'orders'">
-          📦 Order History
-        </button>
-        <button
-          class="tab-btn"
-          [class.active]="activeTab === 'reviews'"
-          (click)="activeTab = 'reviews'">
-          ⭐ My Reviews
-        </button>
+  <main class="profile-main">
+
+    <div class="user-card">
+      <div class="user-avatar">{{ userInitial }}</div>
+      <div class="user-info">
+        <div class="user-name">{{ username }}</div>
+        <div class="user-meta">{{ 'PROFILE.MEMBER' | translate }}</div>
       </div>
-  
-      @if (activeTab === 'orders') {
-        <div class="tab-content">
-          @if (ordersLoading) {
-            <div class="loading-row">
-              @for (i of [1,2,3]; track i) {
-                <div class="skeleton-order"></div>
-              }
-            </div>
-          } @else if (ordersError) {
-            <div class="error-msg">⚠️ {{ ordersError }}</div>
-          } @else if (orders.length === 0) {
-            <div class="empty-state">
-              <span>📭</span>
-              <p>No orders yet</p>
-              <a routerLink="/" class="btn-shop-now">Start shopping →</a>
-            </div>
-          } @else {
-            <div class="orders-list">
-              @for (order of orders; track order.id) {
-                <div class="order-card">
-                  <div class="order-header">
-                    <div>
-                      <div class="order-id">Order #{{ order.id }}</div>
-                      <div class="order-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</div>
-                    </div>
-                    <span class="order-status" [class]="statusClass(order.status)">
-                      {{ statusLabel(order.status) }}
-                    </span>
+      <div class="user-stats">
+        <div class="ustat">
+          <div class="ustat-value">{{ orders.length }}</div>
+          <div class="ustat-label">{{ 'PROFILE.ORDERS_COUNT' | translate }}</div>
+        </div>
+        <div class="ustat">
+          <div class="ustat-value">{{ myReviews.length }}</div>
+          <div class="ustat-label">{{ 'PROFILE.REVIEWS_COUNT' | translate }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'orders'"
+        (click)="activeTab = 'orders'">
+        {{ 'PROFILE.TAB_ORDERS' | translate }}
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'reviews'"
+        (click)="activeTab = 'reviews'">
+        {{ 'PROFILE.TAB_REVIEWS' | translate }}
+      </button>
+    </div>
+
+    @if (activeTab === 'orders') {
+      <div class="tab-content">
+        @if (ordersLoading) {
+          <div class="loading-row">
+            @for (i of [1,2,3]; track i) {
+              <div class="skeleton-order"></div>
+            }
+          </div>
+        } @else if (ordersError) {
+          <div class="error-msg">⚠️ {{ ordersError }}</div>
+        } @else if (orders.length === 0) {
+          <div class="empty-state">
+            <span>📭</span>
+            <p>{{ 'PROFILE.NO_ORDERS' | translate }}</p>
+            <a routerLink="/" class="btn-shop-now">{{ 'PROFILE.START_SHOPPING' | translate }}</a>
+          </div>
+        } @else {
+          <div class="orders-list">
+            @for (order of orders; track order.id) {
+              <div class="order-card">
+                <div class="order-header">
+                  <div>
+                    <div class="order-id">{{ 'PROFILE.ORDER_ID' | translate }}{{ order.id }}</div>
+                    <div class="order-date">{{ order.created_at | date:'MMM d, y · h:mm a' }}</div>
                   </div>
-  
-                  <div class="order-items">
-                    @for (item of order.items; track item.id) {
-                      <div class="order-item-row">
-                        <span class="item-product">Product #{{ item.product }}</span>
-                        <span class="item-qty">× {{ item.quantity }}</span>
-                        <span class="item-price">{{ item.price | number }} ₸</span>
-                      </div>
+                  <span class="order-status" [class]="statusClass(order.status)">
+                    {{ statusLabel(order.status) }}
+                  </span>
+                </div>
+
+                <div class="order-items">
+                  @for (item of order.items; track item.id) {
+                    <div class="order-item-row">
+                      <span class="item-product">{{ 'PROFILE.PRODUCT' | translate }}{{ item.product }}</span>
+                      <span class="item-qty">× {{ item.quantity }}</span>
+                      <span class="item-price">{{ item.price | number }} ₸</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="order-footer">
+                  <span class="order-total-label">{{ 'PROFILE.ORDER_TOTAL' | translate }}</span>
+                  <span class="order-total">{{ order.total | number }} ₸</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab === 'reviews') {
+      <div class="tab-content">
+        @if (reviewsLoading) {
+          <div class="loading-row">
+            @for (i of [1,2]; track i) {
+              <div class="skeleton-order"></div>
+            }
+          </div>
+        } @else if (myReviews.length === 0) {
+          <div class="empty-state">
+            <span>✍️</span>
+            <p>{{ 'PROFILE.NO_REVIEWS' | translate }}</p>
+            <a routerLink="/" class="btn-shop-now">{{ 'PROFILE.BROWSE_PRODUCTS' | translate }}</a>
+          </div>
+        } @else {
+          <div class="reviews-grid">
+            @for (r of myReviews; track r.id) {
+              <div class="review-card">
+                <div class="review-card-header">
+                  <div class="review-product-name">{{ r.product_name }}</div>
+                  <div class="review-stars">
+                    @for (s of stars(r.rating); track $index) {
+                      <span [class.filled]="s === '★'">{{ s }}</span>
                     }
                   </div>
-  
-                  <div class="order-footer">
-                    <span class="order-total-label">Total</span>
-                    <span class="order-total">{{ order.total | number }} ₸</span>
-                  </div>
                 </div>
-              }
-            </div>
-          }
-        </div>
-      }
-  
-      @if (activeTab === 'reviews') {
-        <div class="tab-content">
-          @if (reviewsLoading) {
-            <div class="loading-row">
-              @for (i of [1,2]; track i) {
-                <div class="skeleton-order"></div>
-              }
-            </div>
-          } @else if (myReviews.length === 0) {
-            <div class="empty-state">
-              <span>✍️</span>
-              <p>You haven't reviewed any products yet</p>
-              <a routerLink="/" class="btn-shop-now">Browse products →</a>
-            </div>
-          } @else {
-            <div class="reviews-grid">
-              @for (r of myReviews; track r.id) {
-                <div class="review-card">
-                  <div class="review-card-header">
-                    <div class="review-product-name">{{ r.product_name }}</div>
-                    <div class="review-stars">
-                      @for (s of stars(r.rating); track $index) {
-                        <span [class.filled]="s === '★'">{{ s }}</span>
-                      }
-                    </div>
-                  </div>
-                  @if (r.text) {
-                    <p class="review-text">{{ r.text }}</p>
-                  }
-                  <div class="review-meta">
-                    {{ r.created_at | date:'MMM d, y' }}
-                    <a [routerLink]="['/product', r.product_id]" class="review-link">View product →</a>
-                  </div>
+                @if (r.text) {
+                  <p class="review-text">{{ r.text }}</p>
+                }
+                <div class="review-meta">
+                  {{ r.created_at | date:'MMM d, y' }}
+                  <a [routerLink]="['/product', r.product_id]" class="review-link">{{ 'PROFILE.VIEW_PRODUCT' | translate }}</a>
                 </div>
-              }
-            </div>
-          }
-        </div>
-      }
-  
-    </main>
-  </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </main>
+</div>

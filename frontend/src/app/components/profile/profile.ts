@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { OrderService, Order } from '../../services/order';
 import { ReviewService } from '../../services/review';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -29,6 +29,7 @@ export class Profile implements OnInit {
   private reviewService = inject(ReviewService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private translate = inject(TranslateService);
 
   get username(): string {
     const token = localStorage.getItem('access');
@@ -59,8 +60,8 @@ export class Profile implements OnInit {
         this.ordersLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        this.ordersError = 'Failed to load orders.';
+      error: () => {
+        this.ordersError = this.translate.instant('PROFILE.LOAD_ERROR');
         this.ordersLoading = false;
         this.cdr.detectChanges();
       }
@@ -83,12 +84,9 @@ export class Profile implements OnInit {
   }
 
   statusLabel(status: string): string {
-    const map: Record<string, string> = {
-      pending: 'Pending',
-      paid: 'Paid',
-      shipped: 'Shipped',
-    };
-    return map[status] || status;
+    const key = `PROFILE.STATUS_${status.toUpperCase()}`;
+    const translated = this.translate.instant(key);
+    return translated !== key ? translated : status;
   }
 
   statusClass(status: string): string {
